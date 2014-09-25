@@ -1132,6 +1132,7 @@ containing a value of this type.
         public static final int wifileicon=0x7f020058;
     }
     public static final class id {
+        public static final int Id=0x7f07005d;
         public static final int action_bar=0x7f07002d;
         public static final int action_bar_activity_content=0x7f070025;
         public static final int action_bar_container=0x7f07002c;
@@ -1143,7 +1144,7 @@ containing a value of this type.
         public static final int action_menu_divider=0x7f070026;
         public static final int action_menu_presenter=0x7f070027;
         public static final int action_mode_close_button=0x7f070035;
-        public static final int action_settings=0x7f07005d;
+        public static final int action_settings=0x7f07005f;
         public static final int activity_chooser_view_content=0x7f070036;
         public static final int alignBounds=0x7f07000b;
         public static final int alignMargins=0x7f07000c;
@@ -1164,6 +1165,7 @@ containing a value of this type.
         public static final int dropdown=0x7f070024;
         public static final int edit_query=0x7f070041;
         public static final int end=0x7f07001a;
+        public static final int endButton=0x7f07005e;
         public static final int expand_activities_button=0x7f070037;
         public static final int expanded_menu=0x7f07003d;
         public static final int f_icon=0x7f07004e;

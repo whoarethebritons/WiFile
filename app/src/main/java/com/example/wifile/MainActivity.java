@@ -45,12 +45,11 @@ public class MainActivity extends Activity {
         //wait for the selected folders
         startActivityForResult(openManager,REQUEST_PATH);
     }
-    /*
     public void startServ(View view){
             //open the file manager "explorer"
-            Intent oManager = new Intent(this, NSDActivity.class);
+            Intent oManager = new Intent(this, ServerActivity.class);
             //wait for the selected folders
             startActivityForResult(oManager,REQUEST_PATH);
         }
-*/
+
 }
