@@ -8558,6 +8558,8 @@ false
                 qualifiers="" >
                 <string name="hello_world" >Hello world!
                 </string>
+                <string name="title_activity_server" >ServerActivity
+                </string>
                 <string name="action_settings" >Settings
                 </string>
                 <string name="app_name" >WiFile
@@ -8629,6 +8631,16 @@ false
                 path="C:\Users\Eden\workspace\WiFile\app\src\main\res\drawable-xhdpi\wifileicon.png"
                 qualifiers="xhdpi"
                 type="drawable" />
+            <file
+                name="activity_server"
+                path="C:\Users\Eden\workspace\WiFile\app\src\main\res\layout\activity_server.xml"
+                qualifiers=""
+                type="layout" />
+            <file
+                name="server"
+                path="C:\Users\Eden\workspace\WiFile\app\src\main\res\menu\server.xml"
+                qualifiers=""
+                type="menu" />
         </source>
         <source path="C:\Users\Eden\workspace\WiFile\app\build\res\rs\debug" />
         <source path="C:\Users\Eden\workspace\WiFile\app\build\res\generated\debug" />

@@ -743,6 +743,7 @@
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_file_manager">FileManagerActivity</string>
     <string name="title_activity_notification">NotificationActivity</string>
+    <string name="title_activity_server">ServerActivity</string>
     <!-- From: file:/C:/Users/Eden/workspace/WiFile/app/src/main/res/values/styles.xml -->
     <eat-comment />
 

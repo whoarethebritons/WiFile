@@ -91,6 +91,16 @@
                     android:text="Choose Folders"
                     android:onClick="getFile" >
             </Button>
+            <Button
+                    android:id="@+id/otherButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@+id/linearLayout1"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginTop="30dp"
+                    android:text="Server"
+                    android:onClick="startServ" >
+            </Button>
 
         </LinearLayout>
     </ScrollView>

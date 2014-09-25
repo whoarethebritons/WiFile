@@ -260,7 +260,7 @@ int id action_context_bar 0x7f07002e
 int id action_menu_divider 0x7f070026
 int id action_menu_presenter 0x7f070027
 int id action_mode_close_button 0x7f070035
-int id action_settings 0x7f07005c
+int id action_settings 0x7f07005d
 int id activity_chooser_view_content 0x7f070036
 int id alignBounds 0x7f07000b
 int id alignMargins 0x7f07000c
@@ -302,6 +302,7 @@ int id nameView 0x7f07004f
 int id never 0x7f07001e
 int id none 0x7f07001b
 int id normal 0x7f070000
+int id otherButton 0x7f07005c
 int id progress_circular 0x7f070029
 int id progress_horizontal 0x7f07002a
 int id radio 0x7f070040
@@ -371,10 +372,12 @@ int layout activity_file_manager 0x7f030018
 int layout activity_filelist 0x7f030019
 int layout activity_main 0x7f03001a
 int layout activity_notification 0x7f03001b
-int layout support_simple_spinner_dropdown_item 0x7f03001c
+int layout activity_server 0x7f03001c
+int layout support_simple_spinner_dropdown_item 0x7f03001d
 int menu file_manager 0x7f0c0000
 int menu main 0x7f0c0001
 int menu notification 0x7f0c0002
+int menu server 0x7f0c0003
 int string abc_action_bar_home_description 0x7f0a0000
 int string abc_action_bar_up_description 0x7f0a0001
 int string abc_action_menu_overflow_description 0x7f0a0002
@@ -393,6 +396,7 @@ int string app_name 0x7f0a000e
 int string hello_world 0x7f0a000f
 int string title_activity_file_manager 0x7f0a0010
 int string title_activity_notification 0x7f0a0011
+int string title_activity_server 0x7f0a0012
 int style AppTheme 0x7f0b0000
 int style TextAppearance_AppCompat_Base_CompactMenu_Dialog 0x7f0b0001
 int style TextAppearance_AppCompat_Base_SearchResult 0x7f0b0002
