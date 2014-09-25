@@ -4,22 +4,33 @@
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
-    <!--  -->
+    <!--
     <ImageView android:layout_width="50dp"
                android:layout_height="50dp"
                android:id = "@+id/f_icon"/>
-    <!-- -->
+    -->
     <TextView android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:id = "@+id/nameView"
               android:text = "@+id/nameView"
-              android:layout_toRightOf="@id/f_icon"/>
-    <!-- -->
+              />
+
+    <!--
     <TextView android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:id = "@+id/sizeView"
               android:text = "@+id/sizeView"
-              android:layout_toRightOf="@id/f_icon"
+
               android:layout_below="@id/nameView"/>
+              -->
+    <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:id="@+id/checkBox"
+            android:focusable="false"
+            android:layout_below="@+id/nameView"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"/>
 
 </RelativeLayout>

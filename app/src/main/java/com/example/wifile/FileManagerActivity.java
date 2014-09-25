@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.view.View;
+import android.widget.Checkable;
 import android.widget.ListView;
 import android.os.Environment;
 import java.io.File;
@@ -15,7 +16,7 @@ import java.util.List;
 /**
  * Created by Eden on 9/22/2014.
  */
-public class FileManagerActivity extends ListActivity {
+public class FileManagerActivity extends ListActivity implements Checkable {
 
     //path string
     private String mPath;
@@ -23,11 +24,10 @@ public class FileManagerActivity extends ListActivity {
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        //setContentView(R.id.list);
-        String extState = Environment.getExternalStorageState();
-        //set mPath to be root
+        //
+        //set mPath to be sdcard
         //Environment.getExternalStorageDirectory();
-        mPath = "/";
+        mPath = Environment.getExternalStorageDirectory().getPath();
 
         if (getIntent().hasExtra("mPath")) {
             mPath = getIntent().getStringExtra("mPath");
@@ -66,10 +66,11 @@ public class FileManagerActivity extends ListActivity {
         Collections.sort(dirs);
 
         //adapts the array list to work in list view of android
-        ArrayAdapter adapter = new ArrayAdapter(this,android.R.layout.simple_list_item_2, android.R.id.text1, dirs);
-
+        //ArrayAdapter adapter = new ArrayAdapter(this,android.R.layout.simple_list_item_checked, android.R.id.text1, dirs);
+        setListAdapter((new ArrayAdapter(this,R.layout.activity_filelist, R.id.nameView, dirs)));
+        getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         //sets the list activity to use the array adapter
-        setListAdapter(adapter);
+        //setListAdapter(adapter);
     }
     public void onListItemClick(ListView l, View v, int position, long id) {
         //retrieves the file name at the position you poked
@@ -84,6 +85,7 @@ public class FileManagerActivity extends ListActivity {
             filename = mPath + File.separator + filename;
         }
 
+        //checks if it's a folder
         if(new File(filename).isDirectory()) {
             //creates new intent with the path of new directory
             Intent openDir = new Intent(this, FileManagerActivity.class);
@@ -93,7 +95,30 @@ public class FileManagerActivity extends ListActivity {
             startActivity(openDir);
         }
         else {
-            //code for non directories here
+
         }
+    }
+
+    @Override
+    public void setChecked(boolean checked) {
+
+    }
+
+    @Override
+    public boolean isChecked() {
+        return false;
+    }
+
+    @Override
+    public void toggle() {
+
+    }
+
+    public File[] getSelectedFiles(List checkDirs) {
+        File[] checked = null;
+        for(int i = 0; i< checkDirs.size(); i++) {
+            checked[i] = (File) checkDirs.get(i);
+        }
+        return checked;
     }
 }
