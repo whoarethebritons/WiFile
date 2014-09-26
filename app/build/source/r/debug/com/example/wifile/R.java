@@ -1133,6 +1133,7 @@ containing a value of this type.
     }
     public static final class id {
         public static final int Id=0x7f07005b;
+        public static final int action_back=0x7f07005d;
         public static final int action_bar=0x7f07002d;
         public static final int action_bar_activity_content=0x7f070025;
         public static final int action_bar_container=0x7f07002c;
@@ -1141,10 +1142,11 @@ containing a value of this type.
         public static final int action_bar_subtitle=0x7f070034;
         public static final int action_bar_title=0x7f070033;
         public static final int action_context_bar=0x7f07002e;
+        public static final int action_done=0x7f07005e;
         public static final int action_menu_divider=0x7f070026;
         public static final int action_menu_presenter=0x7f070027;
         public static final int action_mode_close_button=0x7f070035;
-        public static final int action_settings=0x7f07005d;
+        public static final int action_settings=0x7f07005f;
         public static final int activity_chooser_view_content=0x7f070036;
         public static final int alignBounds=0x7f07000b;
         public static final int alignMargins=0x7f07000c;
