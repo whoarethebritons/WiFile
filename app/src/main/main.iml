@@ -13,9 +13,15 @@
     </content>
     <orderEntry type="jdk" jdkName="Android API 19 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
+<<<<<<< HEAD
     <orderEntry type="library" name="classes1" level="project" />
     <orderEntry type="library" name="internal_impl-20.0.0" level="project" />
     <orderEntry type="library" name="20.0.0" level="project" />
+=======
+    <orderEntry type="library" name="classes" level="project" />
+    <orderEntry type="library" name="20.0.0" level="project" />
+    <orderEntry type="library" name="internal_impl-20.0.0" level="project" />
+>>>>>>> 271e8224fdb4a277933e042c8f11b571de49f2b3
   </component>
 </module>
 

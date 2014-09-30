@@ -1,8 +1,12 @@
 package com.example.wifile;
 
+import android.app.ActionBar;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.widget.ArrayAdapter;
 import android.view.View;
 import android.widget.Checkable;
@@ -23,9 +27,14 @@ public class FileManagerActivity extends ListActivity {
     //path string
     private String mPath;
 
+
+
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+
+        ActionBar actionBar = getActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
         //
         //set mPath to be sdcard
         //Environment.getExternalStorageDirectory();
@@ -51,16 +60,16 @@ public class FileManagerActivity extends ListActivity {
             setTitle(mPath + "(inaccessible)");
         }
 
-        String[] list = mFile.list();
+        File[] flist = mFile.listFiles();
 
         //tests if the array is empty
-        if (list != null) {
+        if (flist != null) {
             //gets the name of every file/directory in that path
-            for (String file : list) {
+            for (File file : flist) {
                 //tests if it's a file we actually want the user to be able to select
-                if (!file.startsWith(".")) {
+                if (!file.getName().startsWith(".")) {
                     //adds the file name to the arrayList
-                    dirs.add(file);
+                    dirs.add(file.getName());
                 }
             }
         }
@@ -69,7 +78,7 @@ public class FileManagerActivity extends ListActivity {
 
         //adapts the array list to work in list view of android
         //ArrayAdapter adapter = new ArrayAdapter(this,android.R.layout.simple_list_item_checked, android.R.id.text1, dirs);
-        setListAdapter((new ArrayAdapter(this,R.layout.activity_filelist, R.id.nameView, dirs)));
+        setListAdapter((new ArrayAdapter(this, R.layout.activity_filelist, R.id.nameView, dirs)));
         getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         //sets the list activity to use the array adapter
         //setListAdapter(adapter);
@@ -83,7 +92,11 @@ public class FileManagerActivity extends ListActivity {
     //Is this method working for the checkbox? Or is to show the files within this folder?
     public void onListItemClick(ListView l, View v, int position, long id) {
 
+<<<<<<< HEAD
         //List itemChecked = new ArrayList();
+=======
+      //goes into folder
+>>>>>>> 271e8224fdb4a277933e042c8f11b571de49f2b3
         //retrieves the file name at the position you poked
         String filename = (String) getListAdapter().getItem(position);
 
@@ -98,6 +111,9 @@ public class FileManagerActivity extends ListActivity {
 
         //checks if it's a folder
         if(new File(filename).isDirectory()) {
+            Intent parent = getIntent();
+
+
             //creates new intent with the path of new directory
             Intent openDir = new Intent(this, FileManagerActivity.class);
             //assigns the path to the new activity
@@ -111,6 +127,14 @@ public class FileManagerActivity extends ListActivity {
        // itemChecked.add(filename);
     }
 
+<<<<<<< HEAD
+=======
+    public Intent getSupportParentActivityIntent () {
+        return getIntent();
+    }
+
+    @Override
+>>>>>>> 271e8224fdb4a277933e042c8f11b571de49f2b3
     public void setChecked(boolean checked) {
 
     }
@@ -123,7 +147,13 @@ public class FileManagerActivity extends ListActivity {
 
     }
 
+<<<<<<< HEAD
     //how to retrieve check marks?
+=======
+
+
+
+>>>>>>> 271e8224fdb4a277933e042c8f11b571de49f2b3
     public File[] getSelectedFiles(List checkDirs) {
         File[] checked = null;
         for(int i = 0; i< checkDirs.size(); i++) {

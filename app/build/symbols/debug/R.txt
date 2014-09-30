@@ -250,6 +250,7 @@ int drawable abc_textfield_searchview_right_holo_light 0x7f020056
 int drawable ic_launcher 0x7f020057
 int drawable wifileicon 0x7f020058
 int id Id 0x7f07005b
+int id action_back 0x7f07005d
 int id action_bar 0x7f07002d
 int id action_bar_activity_content 0x7f070025
 int id action_bar_container 0x7f07002c
@@ -258,10 +259,11 @@ int id action_bar_root 0x7f07002b
 int id action_bar_subtitle 0x7f070034
 int id action_bar_title 0x7f070033
 int id action_context_bar 0x7f07002e
+int id action_done 0x7f07005e
 int id action_menu_divider 0x7f070026
 int id action_menu_presenter 0x7f070027
 int id action_mode_close_button 0x7f070035
-int id action_settings 0x7f07005d
+int id action_settings 0x7f07005f
 int id activity_chooser_view_content 0x7f070036
 int id alignBounds 0x7f07000b
 int id alignMargins 0x7f07000c
