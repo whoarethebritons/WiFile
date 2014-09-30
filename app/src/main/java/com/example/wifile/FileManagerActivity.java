@@ -12,12 +12,14 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import android.util.SparseBooleanArray;
 
 /**
  * Created by Eden on 9/22/2014.
  */
-public class FileManagerActivity extends ListActivity implements Checkable {
+public class FileManagerActivity extends ListActivity {
 
+    SparseBooleanArray mCheckStates;
     //path string
     private String mPath;
 
@@ -72,7 +74,16 @@ public class FileManagerActivity extends ListActivity implements Checkable {
         //sets the list activity to use the array adapter
         //setListAdapter(adapter);
     }
+
+    public void getItemsChecked()
+    {
+
+    }
+
+    //Is this method working for the checkbox? Or is to show the files within this folder?
     public void onListItemClick(ListView l, View v, int position, long id) {
+
+        //List itemChecked = new ArrayList();
         //retrieves the file name at the position you poked
         String filename = (String) getListAdapter().getItem(position);
 
@@ -97,23 +108,22 @@ public class FileManagerActivity extends ListActivity implements Checkable {
         else {
 
         }
+       // itemChecked.add(filename);
     }
 
-    @Override
     public void setChecked(boolean checked) {
 
     }
 
-    @Override
-    public boolean isChecked() {
-        return false;
+    public boolean isChecked(int position) {
+        return mCheckStates.get(position, false);
     }
 
-    @Override
     public void toggle() {
 
     }
 
+    //how to retrieve check marks?
     public File[] getSelectedFiles(List checkDirs) {
         File[] checked = null;
         for(int i = 0; i< checkDirs.size(); i++) {
@@ -121,4 +131,19 @@ public class FileManagerActivity extends ListActivity implements Checkable {
         }
         return checked;
     }
+
+//If a checkbox is checked then retrieve the data and store in a list. This should run if user clicks DONE
+    /*public void onItemChecked(View v)
+    {
+        Checkbox checkbox = (Checkbox)v;
+        if(checkBox.isChecked())
+        {
+            List selected_files = new ArrayList();
+            //if it's a directory, open it and get all the file names
+
+            //if it's only a file, get file path name
+            //push directory/ file name to wherever needed
+        }
+    }*/
+
 }
