@@ -1,16 +1,20 @@
 package com.example.wifile;
 
+import android.app.Service;
 import android.content.Context;
+import android.content.Intent;
 import android.net.nsd.NsdServiceInfo;
 import android.net.nsd.NsdManager;
+import android.os.IBinder;
 import android.util.Log;
 
 import java.net.InetAddress;
+import java.net.ServerSocket;
 
 /**
  * Created by Kait on 9/29/2014.
  */
-public class NsdHelper {
+public class NsdHelper extends ServerActivity {
 
     Context wfContext;
 
@@ -24,9 +28,8 @@ public class NsdHelper {
     public static final String TAG = "NsdHelper";
     public String wfServiceName = "NsdWiFile";
 
-    public NsdHelper(Context context) {
-        wfContext = context;
-        wfNsdManager = (NsdManager) context.getSystemService(Context.NSD_SERVICE);
+    public NsdHelper() {
+        initializeNsd();
     }
 
     public void initializeNsd() {
