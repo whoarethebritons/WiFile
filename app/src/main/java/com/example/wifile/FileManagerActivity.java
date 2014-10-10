@@ -31,9 +31,6 @@ public class FileManagerActivity extends ListActivity implements Checkable {
 
         super.onCreate(savedInstanceState);
 
-        ActionBar actionBar = getActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        //
         //set mPath to be sdcard
         //Environment.getExternalStorageDirectory();
         mPath = Environment.getExternalStorageDirectory().getPath();
