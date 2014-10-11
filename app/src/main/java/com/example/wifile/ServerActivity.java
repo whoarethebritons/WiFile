@@ -72,7 +72,6 @@ public class ServerActivity extends ActionBarActivity {
     }
 
     public void serverMethod() {
-
         try {
             //created a server socket at port 1527
             //eventually switch to new ServerSocket(0)
