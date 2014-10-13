@@ -23,21 +23,14 @@ import android.util.SparseBooleanArray;
  */
 public class FileManagerActivity extends ListActivity {
 
-    SparseBooleanArray mCheckStates;
-    //path string
-    private String mPath;
-
-
 
     public void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
 
-        ActionBar actionBar = getActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        //
+       /*---------------------Get the SD card directory into a File List--------------------------*/
         //set mPath to be sdcard
         //Environment.getExternalStorageDirectory();
+        //gets all files in the SD card
         mPath = Environment.getExternalStorageDirectory().getPath();
 
         if (getIntent().hasExtra("mPath")) {
@@ -59,7 +52,7 @@ public class FileManagerActivity extends ListActivity {
         if (!mFile.canRead()) {
             setTitle(mPath + "(inaccessible)");
         }
-
+        //List all the files in the current directory
         File[] flist = mFile.listFiles();
 
         //tests if the array is empty
@@ -73,30 +66,44 @@ public class FileManagerActivity extends ListActivity {
                 }
             }
         }
-        //sorts the array list
+        //sorts the array list in alphabetical order
         Collections.sort(dirs);
+        /*------------------------------------------------------------------------------------------*/
 
-        //adapts the array list to work in list view of android
-        //ArrayAdapter adapter = new ArrayAdapter(this,android.R.layout.simple_list_item_checked, android.R.id.text1, dirs);
-        setListAdapter((new ArrayAdapter(this, R.layout.activity_filelist, R.id.nameView, dirs)));
-        getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-        //sets the list activity to use the array adapter
-        //setListAdapter(adapter);
+        //Create checkListAdaptor
+        checkBox = new CheckAdapter(this,android.R.layout.simple_list_item_checked, android.R.id.text1, dirs);
+
+        //Show the ListView and add OnClickListeners
+        final ListView listView = getListView();
+        listView.setOnItemClickListener(this);
     }
 
+    //
+    public static class CheckAdapter extends ArrayAdapter<String>
+            implements CompoundButton.OnCheckedChangeListener
+    {
+        private SparseBooleanArray checkStates;
+
+        public CheckAdapter(Context context, int resource, int textViewResourceID,String[] list)
+        {
+            super(context,resource,textViewResourceID,list);
+            checkStates = new SparseBooleanArray(list.length);
+        }
+    }
+
+    //Store the path names in a separate text file to keep a history of what was sent/synced
     public void getItemsChecked()
     {
-
+        //filePath gets all the files in SD card
+        String filePath = Environment.getExternalStorageDirectory().getPath();
+        //Retrive the checked boxes
     }
 
-    //Is this method working for the checkbox? Or is to show the files within this folder?
+    //Shows the files within each folder
     public void onListItemClick(ListView l, View v, int position, long id) {
 
-<<<<<<< HEAD
         //List itemChecked = new ArrayList();
-=======
       //goes into folder
->>>>>>> 271e8224fdb4a277933e042c8f11b571de49f2b3
         //retrieves the file name at the position you poked
         String filename = (String) getListAdapter().getItem(position);
 
@@ -127,14 +134,10 @@ public class FileManagerActivity extends ListActivity {
        // itemChecked.add(filename);
     }
 
-<<<<<<< HEAD
-=======
     public Intent getSupportParentActivityIntent () {
         return getIntent();
     }
 
-    @Override
->>>>>>> 271e8224fdb4a277933e042c8f11b571de49f2b3
     public void setChecked(boolean checked) {
 
     }
@@ -147,13 +150,7 @@ public class FileManagerActivity extends ListActivity {
 
     }
 
-<<<<<<< HEAD
     //how to retrieve check marks?
-=======
-
-
-
->>>>>>> 271e8224fdb4a277933e042c8f11b571de49f2b3
     public File[] getSelectedFiles(List checkDirs) {
         File[] checked = null;
         for(int i = 0; i< checkDirs.size(); i++) {

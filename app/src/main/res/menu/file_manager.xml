@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -15,7 +15,7 @@
 </Button>
 
 </menu>
-=======
+
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
     <item android:id="@+id/action_back"
           android:title="Back"/>
@@ -23,4 +23,4 @@
           android:title="Done"
           android:onClick="finish"/>
 </menu>
->>>>>>> 271e8224fdb4a277933e042c8f11b571de49f2b3
+
