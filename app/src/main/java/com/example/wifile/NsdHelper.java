@@ -14,7 +14,7 @@ import java.net.ServerSocket;
 /**
  * Created by Kait on 9/29/2014.
  */
-public class NsdHelper extends ServerActivity {
+public class NsdHelper extends Server {
 
     Context wfContext;
 
