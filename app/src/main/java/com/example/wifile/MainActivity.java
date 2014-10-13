@@ -15,7 +15,6 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         //eventually some code to pull up notification icon
     }
 
@@ -46,6 +45,7 @@ public class MainActivity extends Activity {
         startActivityForResult(openManager,REQUEST_PATH);
     }
     public void startServ(View view){
+
             //open the file manager "explorer"
             Intent oManager = new Intent(this, ServerActivity.class);
             //wait for the selected folders

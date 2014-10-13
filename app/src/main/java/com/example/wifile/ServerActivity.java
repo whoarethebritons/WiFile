@@ -1,9 +1,11 @@
 package com.example.wifile;
 
 import android.graphics.Bitmap;
+import android.net.wifi.WifiManager;
 import android.os.StrictMode;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.text.format.Formatter;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -71,17 +73,21 @@ public class ServerActivity extends ActionBarActivity {
     }
 
     public void serverMethod() {
-
         try {
             //created a server socket at port 1527
             //eventually switch to new ServerSocket(0)
             //which will have android assign it to an open port automatically
             ServerSocket servsock = new ServerSocket(1527);
 
-            //the ip address of the server
-            String ssip = servsock.toString();
+            //String ssip = servsock.getInetAddress().getLocalHost().getHostAddress();
+            WifiManager wm = (WifiManager) getSystemService(WIFI_SERVICE);
+            String ssip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
+            int sslp = servsock.getLocalPort();
 
-            System.out.println(ssip);
+            //the ip address of the server
+
+
+            System.out.println(ssip + " " + sslp);
 
             //change the text view to display the ip address
             TextView t = (TextView)findViewById(R.id.Id);

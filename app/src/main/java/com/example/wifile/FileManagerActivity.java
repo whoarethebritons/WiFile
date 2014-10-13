@@ -27,7 +27,10 @@ public class FileManagerActivity extends ListActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+<<<<<<< HEAD
        /*---------------------Get the SD card directory into a File List--------------------------*/
+=======
+>>>>>>> 3ef2c286dd21b86905bfce01bcb179be2a69de38
         //set mPath to be sdcard
         //Environment.getExternalStorageDirectory();
         //gets all files in the SD card
