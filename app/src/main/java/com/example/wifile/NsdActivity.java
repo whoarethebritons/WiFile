@@ -31,7 +31,9 @@ public class NsdActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         wfHelper = new NsdHelper();
+        Server wfServer = new Server();
         findDeviceIP(this);
+        wfServer.getPort();
     }
 
     public void findDeviceIP(Context context) {
@@ -40,7 +42,6 @@ public class NsdActivity extends Activity {
         int ipAddress = wifiInfo.getIpAddress();
         wfIP = String.format("%d.%d.%d.%d", (ipAddress & 0xff), (ipAddress >> 8 & 0xff), (ipAddress >> 16 & 0xff), (ipAddress >> 24 & 0xff));
     }
-
 
 // end class NsdActivity
     public String getwfIP() {
