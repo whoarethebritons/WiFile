@@ -41,11 +41,6 @@ public class NsdActivity extends Activity {
         wfIP = String.format("%d.%d.%d.%d", (ipAddress & 0xff), (ipAddress >> 8 & 0xff), (ipAddress >> 16 & 0xff), (ipAddress >> 24 & 0xff));
     }
 
-    //gets the local ip
-    //doesn't need to be done in server
-    WifiManager wm = (WifiManager) getSystemService(WIFI_SERVICE);
-    String ssip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
-
 
 // end class NsdActivity
     public String getwfIP() {
