@@ -19,16 +19,23 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.OutputStream;
+import java.net.SocketException;
 
 
 public class ServerActivity extends ActionBarActivity {
-
+    ServerSocket serv = null;
+    Thread newThread;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_server);
 
-        newThread();
+        newThread = new Thread(new Runnable() {
+            public void run() {
+                serverMethod(serv);
+            }
+        });
+        newThread.start();
 
         /*
         if (android.os.Build.VERSION.SDK_INT > 8)
@@ -63,21 +70,42 @@ public class ServerActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void newThread() {
-        new Thread(new Runnable() {
-            public void run() {
-                serverMethod();
-            }
-        }).start();
+
+
+    public void closeServ(View view) throws IOException {
+
+        newThread.interrupt();
+        String s;
+        s = newThread.isAlive() ? "true" : "false";
+        System.out.println(newThread.getId() + " " + newThread.getState() + " " +  s);
+        serv.close();
+        TextView t = (TextView) findViewById(R.id.servstat);
+        t.setText("server closed");
     }
 
-    public void serverMethod() {
+    public void reopenServ(View view) throws IOException {
+        newThread.run();
+        String s = newThread.isAlive() ? "true" : "false";
+        System.out.println(newThread.getId() + " " + newThread.getState() + " " +  s);
+    }
+
+    public void serverMethod(ServerSocket servsock) {
+
+        //ServerSocket servsock = s;
+        Socket sock = null;
+        OutputStream os = null;
+        BufferedInputStream bis = null;
+        if (Thread.currentThread().isInterrupted()) {
+            return;
+        }
         try {
             //created a server socket at port 1527
             //eventually switch to new ServerSocket(0)
             //which will have android assign it to an open port automatically
-            ServerSocket servsock = new ServerSocket(1527);
-
+            servsock = new ServerSocket(1527);
+            serv = servsock;
+            TextView t1 = (TextView) findViewById(R.id.servstat);
+            t1.setText( "server open");
             //String ssip = servsock.getInetAddress().getLocalHost().getHostAddress();
             WifiManager wm = (WifiManager) getSystemService(WIFI_SERVICE);
             String ssip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
@@ -89,19 +117,21 @@ public class ServerActivity extends ActionBarActivity {
             System.out.println(ssip + " " + sslp);
 
             //change the text view to display the ip address
-            TextView t = (TextView)findViewById(R.id.Id);
+            TextView t = (TextView) findViewById(R.id.Id);
             t.setText(ssip);
 
             //file to transfer
             //this is an example file that exists on my phone
-            File myFile = new File("/mnt/sdcard/download/download.jpg");
+            File myFile = new File("/mnt/sdcard/download/pearing.png");
 
             //while statement will be changed to go through
             //an array of files
             //I think
             //while (true) {
                 //accept socket connection
-                Socket sock = servsock.accept();
+
+                sock = servsock.accept();
+                //servsock.bind(sock.getLocalSocketAddress());
 
                 //this sets the size of the buffer to be the size of the file
                 //this allows the WHOLE file to be transferred
@@ -114,21 +144,29 @@ public class ServerActivity extends ActionBarActivity {
                 System.out.println(myFile.length());
 
                 //input stream for socket
-                BufferedInputStream bis = new BufferedInputStream(new FileInputStream(myFile));
+                bis = new BufferedInputStream(new FileInputStream(myFile));
                 bis.read(mybytearray, 0, mybytearray.length);
 
                 //output stream for socket
-                OutputStream os = sock.getOutputStream();
-                os.write(mybytearray, 0, mybytearray.length);
+                os = sock.getOutputStream();
 
-                //flushes value
-                os.flush();
-                sock.close();
-            servsock.close();
+                os.write(mybytearray, 0, mybytearray.length);
             //}
         } catch (IOException e) {
             e.printStackTrace();
         }
+        finally{
+                //flushes value
+            try {
+                os.flush();
+                sock.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch(NullPointerException e) {
+                e.printStackTrace();
+            }
+            }
+
     }
 
 }

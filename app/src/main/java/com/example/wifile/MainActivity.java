@@ -52,7 +52,6 @@ public class MainActivity extends Activity {
             startActivityForResult(oManager,REQUEST_PATH);
         }
     public void startService(View view){
-
         //open the file manager "explorer"
         Intent oManager = new Intent(this, NsdActivity.class);
         //wait for the selected folders
