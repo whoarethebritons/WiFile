@@ -2,6 +2,7 @@ package com.example.wifile;
 
 import android.app.ActionBar;
 import android.app.ListActivity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -13,24 +14,25 @@ import android.widget.Checkable;
 import android.widget.ListView;
 import android.os.Environment;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import android.util.SparseBooleanArray;
 
 /**
+ * FileManagerActivity is responsible for retrieving the selected files from the checkboxes
+ * and storing those selected files within a TEXT FILE. MAKE A FOLDER PUT A FILE IN THERE!!!!!!!
  * Created by Eden on 9/22/2014.
  */
 public class FileManagerActivity extends ListActivity {
-
+    private SparseBooleanArray checkStates;
+    private String mPath;
+    //Create the history file, where we will store the files to be added
+    // to the computer. The file will be stored on the the phone's sd card
+    File historyFile = new File("/sdcard/WiFileHistory.txt");
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-<<<<<<< HEAD
        /*---------------------Get the SD card directory into a File List--------------------------*/
-=======
->>>>>>> 3ef2c286dd21b86905bfce01bcb179be2a69de38
         //set mPath to be sdcard
         //Environment.getExternalStorageDirectory();
         //gets all files in the SD card
@@ -71,42 +73,61 @@ public class FileManagerActivity extends ListActivity {
         }
         //sorts the array list in alphabetical order
         Collections.sort(dirs);
+        Object[] storeDirs = dirs.toArray(); //Convert List to an object array
+        String[] fileDirectory = Arrays.copyOf(storeDirs, storeDirs.length,String[].class);//Convert to type String
+
         /*------------------------------------------------------------------------------------------*/
+       // ArrayAdapter adapter = new ArrayAdapter(this,android.R.layout.simple_list_item_checked, android.R.id.text1, dirs);
+        //setListAdapter((new ArrayAdapter(this, R.layout.activity_filelist, R.id.nameView, dirs)));
 
         //Create checkListAdaptor
-        checkBox = new CheckAdapter(this,android.R.layout.simple_list_item_checked, android.R.id.text1, dirs);
+        CheckAdapter checkBox = new CheckAdapter(this,android.R.layout.simple_list_item_checked, android.R.id.text1,
+                fileDirectory);
+        //(Context context, int resource, int textViewResourceID, T[] objects )
+        //(context, references a single textview, field ID references a textview in the larger layout resource,
+        // array of objects to store into arrayadapter)
 
         //Show the ListView and add OnClickListeners
-        final ListView listView = getListView();
-        listView.setOnItemClickListener(this);
+        //final ListView listView = getListView();
+        //listView.setOnItemClickListener(this);
     }
 
-    //
-    public static class CheckAdapter extends ArrayAdapter<String>
-            implements CompoundButton.OnCheckedChangeListener
-    {
-        private SparseBooleanArray checkStates;
+    public class CheckAdapter extends ArrayAdapter<String> {
+        Context context;
+        int resource;
+        int textViewResourceID;
 
-        public CheckAdapter(Context context, int resource, int textViewResourceID,String[] list)
-        {
-            super(context,resource,textViewResourceID,list);
+        public CheckAdapter(Context context, int resource, int textViewResourceID, String[] list) {
+            super(context, resource, textViewResourceID, list);
+
             checkStates = new SparseBooleanArray(list.length);
         }
     }
 
-    //Store the path names in a separate text file to keep a history of what was sent/synced
-    public void getItemsChecked()
+    public boolean isChecked(int position) {
+
+        return checkStates.get(position, false);
+    }
+
+    public void setChecked(int position,boolean checked) {
+        checkStates.put(position,checked);
+    }
+
+    public void toggle(int position, boolean checked) {
+        setChecked(position, !checked);
+    }
+
+    //Is this the done button?
+    public void finish()
     {
-        //filePath gets all the files in SD card
-        String filePath = Environment.getExternalStorageDirectory().getPath();
-        //Retrive the checked boxes
+
     }
 
     //Shows the files within each folder
     public void onListItemClick(ListView l, View v, int position, long id) {
 
         //List itemChecked = new ArrayList();
-      //goes into folder
+        //goes into folder
         //retrieves the file name at the position you poked
         String filename = (String) getListAdapter().getItem(position);
 
@@ -123,7 +144,6 @@ public class FileManagerActivity extends ListActivity {
         if(new File(filename).isDirectory()) {
             Intent parent = getIntent();
 
-
             //creates new intent with the path of new directory
             Intent openDir = new Intent(this, FileManagerActivity.class);
             //assigns the path to the new activity
@@ -134,23 +154,11 @@ public class FileManagerActivity extends ListActivity {
         else {
 
         }
-       // itemChecked.add(filename);
+        // itemChecked.add(filename);
     }
 
     public Intent getSupportParentActivityIntent () {
-        return getIntent();
-    }
-
-    public void setChecked(boolean checked) {
-
-    }
-
-    public boolean isChecked(int position) {
-        return mCheckStates.get(position, false);
-    }
-
-    public void toggle() {
-
+      return getIntent();
     }
 
     //how to retrieve check marks?
@@ -161,19 +169,4 @@ public class FileManagerActivity extends ListActivity {
         }
         return checked;
     }
-
-//If a checkbox is checked then retrieve the data and store in a list. This should run if user clicks DONE
-    /*public void onItemChecked(View v)
-    {
-        Checkbox checkbox = (Checkbox)v;
-        if(checkBox.isChecked())
-        {
-            List selected_files = new ArrayList();
-            //if it's a directory, open it and get all the file names
-
-            //if it's only a file, get file path name
-            //push directory/ file name to wherever needed
-        }
-    }*/
-
 }

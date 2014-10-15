@@ -16,8 +16,6 @@
             android:layout_width="?android:attr/listPreferredItemHeight"
             android:layout_height="fill_parent"
             android:text=""
-            android:paddingLeft="@dimen/default_gap"
-            android:paddingRight="@dimen/default_gap"
             android:id="@+id/checkBox"
             android:focusable="false"
             android:layout_alignParentRight="true"
