@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
 
     <application
             android:allowBackup="true"
@@ -39,6 +40,22 @@
         <activity
                 android:name="com.example.wifile.ServerActivity"
                 android:label="@string/title_activity_server"
+                android:parentActivityName="com.example.wifile.MainActivity" >
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value="MainActivity" />
+        </activity>
+        <activity
+                android:name="com.example.wifile.NsdActivity"
+                android:label="title_activity_nsdactivity"
+                android:parentActivityName="com.example.wifile.MainActivity" >
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value="MainActivity" />
+        </activity>
+        <activity
+                android:name="com.example.wifile.NsdHelper"
+                android:label="title_activity_nsdhelper"
                 android:parentActivityName="com.example.wifile.MainActivity" >
             <meta-data
                     android:name="android.support.PARENT_ACTIVITY"

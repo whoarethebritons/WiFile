@@ -12,15 +12,36 @@
         android:id="@+id/Id"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
+    <TextView
+        android:id="@+id/servstat"
+        android:layout_below="@+id/Id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        />
+    <GridLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/servstat">
     <Button
             android:id="@+id/endButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignLeft="@+id/linearLayout1"
-            android:layout_alignParentBottom="true"
             android:layout_marginTop="30dp"
             android:text="EndServer"
+            android:onClick="closeServ"
              >
     </Button>
+    <Button
+            android:id="@+id/startButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/linearLayout1"
+            android:layout_marginTop="30dp"
+            android:text="RestartServer"
+            android:onClick="reopenServ"
+            >
+    </Button>
+    </GridLayout>
 
 </RelativeLayout>

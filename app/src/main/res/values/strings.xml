@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">WiFile</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="device_list">Computer 1\nComputer 2\nAndroid 1</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_notification">NotificationActivity</string>
     <string name="title_activity_file_manager">FileManagerActivity</string>

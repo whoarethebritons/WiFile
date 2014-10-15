@@ -31,7 +31,9 @@ public class NsdActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         wfHelper = new NsdHelper();
+        Server wfServer = new Server();
         findDeviceIP(this);
+        wfServer.getPort();
     }
 
     public void findDeviceIP(Context context) {
