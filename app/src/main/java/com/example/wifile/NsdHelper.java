@@ -1,15 +1,9 @@
 package com.example.wifile;
 
-import android.app.Service;
 import android.content.Context;
-import android.content.Intent;
-import android.net.nsd.NsdServiceInfo;
 import android.net.nsd.NsdManager;
-import android.os.IBinder;
+import android.net.nsd.NsdServiceInfo;
 import android.util.Log;
-
-import java.net.InetAddress;
-import java.net.ServerSocket;
 
 /**
  * Created by Kait on 9/29/2014.
@@ -17,18 +11,21 @@ import java.net.ServerSocket;
 public class NsdHelper extends Server {
 
     Context wfContext;
-
     NsdManager wfNsdManager;
     NsdManager.RegistrationListener wfRegistrationListener;
     NsdManager.DiscoveryListener wfDiscoveryListener;
     NsdManager.ResolveListener wfResolveListener;
     NsdServiceInfo wfService;
+    Context mContext;
 
     public static final String SERVICE_TYPE = "_ftp._tcp.";
     public static final String TAG = "NsdHelper";
-    public String wfServiceName = "NsdWiFile";
 
-    public NsdHelper() {
+    public String wfServiceName = "NsdWiFile";
+    public NsdHelper(Context context) {
+        mContext = context;
+        wfNsdManager = (NsdManager) context.getSystemService(Context.NSD_SERVICE);
+        System.out.println("helper created");
         initializeNsd();
     }
 
@@ -73,6 +70,7 @@ public class NsdHelper extends Server {
                 // resolve a conflict, so update the name you initially requested
                 // with the name Android actually used.
                 wfServiceName = NsdServiceInfo.getServiceName();
+                System.out.println(wfServiceName);
             }
 
             @Override
@@ -185,6 +183,9 @@ public class NsdHelper extends Server {
 
     public NsdServiceInfo getChosenServiceInfo() { return wfService; }
 
-    public void tearDown() { wfNsdManager.unregisterService(wfRegistrationListener); }
+    public void tearDown() {
+        wfNsdManager.unregisterService(wfRegistrationListener);
+        wfNsdManager.stopServiceDiscovery(wfDiscoveryListener);
+    }
 
 }// end class NsdHelper

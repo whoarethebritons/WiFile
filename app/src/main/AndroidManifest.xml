@@ -53,14 +53,7 @@
                     android:name="android.support.PARENT_ACTIVITY"
                     android:value="MainActivity" />
         </activity>
-        <activity
-                android:name="com.example.wifile.NsdHelper"
-                android:label="title_activity_nsdhelper"
-                android:parentActivityName="com.example.wifile.MainActivity" >
-            <meta-data
-                    android:name="android.support.PARENT_ACTIVITY"
-                    android:value="MainActivity" />
-        </activity>
+
     </application>
 
 </manifest>
