@@ -10,20 +10,21 @@ import android.util.Log;
  */
 public class NsdHelper extends Server {
 
-    Context wfContext;
     NsdManager wfNsdManager;
     NsdManager.RegistrationListener wfRegistrationListener;
     NsdManager.DiscoveryListener wfDiscoveryListener;
     NsdManager.ResolveListener wfResolveListener;
     NsdServiceInfo wfService;
-    Context mContext;
+    Context wfContext;
+    int wfPort;
 
     public static final String SERVICE_TYPE = "_ftp._tcp.";
     public static final String TAG = "NsdHelper";
 
     public String wfServiceName = "NsdWiFile";
     public NsdHelper(Context context) {
-        mContext = context;
+        wfContext = context;
+        //added to get nsdmanager so that service can be registered
         wfNsdManager = (NsdManager) context.getSystemService(Context.NSD_SERVICE);
         System.out.println("helper created");
         initializeNsd();
@@ -110,6 +111,8 @@ public class NsdHelper extends Server {
             public void onServiceFound(NsdServiceInfo service) {
                 // A service was found!
                 Log.d(TAG, "Service discovery success" + service);
+                //added to see which port the server was on
+                Log.d(TAG, "my server on port: " + wfPort);
                 if(!service.getServiceType().equals(SERVICE_TYPE)) {
                     // Service type is the string containing the protocol
                     // and transport later for this service.
@@ -165,6 +168,21 @@ public class NsdHelper extends Server {
 
             @Override
             public void onServiceResolved(NsdServiceInfo serviceInfo) {
+
+                /*
+                in here we need to list the devices that have the
+                NSDWiFile service running
+
+
+                what we could do later on is change
+                service.getServiceName().contains("NsdWiFile")
+                to
+                service.getServiceName().contains("WiFile")
+                and have computers generate the service name as "DNSWiFile"
+                so we can make separate lists of android and computers
+                 */
+
+
                 Log.e(TAG, "Resolve Succeeded." + serviceInfo);
 
                 if (serviceInfo.getServiceName().equals(wfServiceName)) {
@@ -183,9 +201,16 @@ public class NsdHelper extends Server {
 
     public NsdServiceInfo getChosenServiceInfo() { return wfService; }
 
+
+    //added for when service is torn down
     public void tearDown() {
         wfNsdManager.unregisterService(wfRegistrationListener);
         wfNsdManager.stopServiceDiscovery(wfDiscoveryListener);
+    }
+    //added to get information from activity
+    //which gets the info from the server
+    public void setServerPort(int port) {
+        wfPort = port;
     }
 
 }// end class NsdHelper

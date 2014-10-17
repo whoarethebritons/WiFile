@@ -8,6 +8,8 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 
+import java.io.File;
+
 /**
  * Created by Kait on 10/4/2014.
  */
@@ -18,15 +20,42 @@ public class NsdActivity extends Activity {
     NsdHelper wfHelper;
     int mPort;
     private String wfIP;
+    Server wfServer;
 
     protected void onCreate(Bundle savedInstanceState) {
-        System.out.println("activity created");
-        super.onCreate(savedInstanceState);
-        wfHelper = new NsdHelper(this);
-        Server wfServer = new Server();
-        findDeviceIP(this);
-        mPort = wfServer.getPort();
 
+        super.onCreate(savedInstanceState);
+
+        //creating instances of other classes
+        //necessary for file transfer
+        wfHelper = new NsdHelper(this);
+        wfServer = new Server();
+
+        //retrieving port
+        mPort = wfServer.getPort();
+        //telling NSD what port the server is on
+        wfHelper.setServerPort(mPort);
+
+        //finds IP of current device
+        //may be unnecessary with the way nsd works
+        findDeviceIP(this);
+
+        //without a new thread for the server transfers
+        //there will be a NetworkOnMainThreadException
+        Thread newThread = new Thread(new Runnable() {
+            public void run() {
+                serverMethod();
+            }
+        });
+        newThread.start();
+    }
+
+    //method to send files
+    //needs to be converted to whatever format Karen is making
+    public void serverMethod() {
+        //the input file here is not used at all
+        //since we're going to have a different way of doing this
+        wfServer.sendFiles(new File("/mnt/sdcard"));
     }
 
     public void findDeviceIP(Context context) {
@@ -35,6 +64,15 @@ public class NsdActivity extends Activity {
         int ipAddress = wifiInfo.getIpAddress();
         wfIP = String.format("%d.%d.%d.%d", (ipAddress & 0xff), (ipAddress >> 8 & 0xff), (ipAddress >> 16 & 0xff), (ipAddress >> 24 & 0xff));
     }
+
+    /*
+    Added methods for when activity is paused
+    resumed, or destroyed
+    these register the service, discover services,
+    or tear it down
+     */
+
+
     @Override
     protected void onPause() {
         if (wfHelper != null) {
@@ -55,9 +93,11 @@ public class NsdActivity extends Activity {
     @Override
     protected void onDestroy() {
         wfHelper.tearDown();
-        //mConnection.tearDown();
         super.onDestroy();
     }
+    /*
+    end of addition for activity methods
+     */
 
 // end class NsdActivity
     public String getwfIP() {

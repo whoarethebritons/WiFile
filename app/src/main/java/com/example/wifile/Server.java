@@ -1,12 +1,8 @@
 package com.example.wifile;
 
-import android.net.wifi.WifiManager;
-import android.text.format.Formatter;
 import android.util.Log;
 
 import java.io.*;
-import java.net.Inet4Address;
-import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -16,8 +12,6 @@ import java.net.Socket;
 public class Server {
     //tag for the log
     public final String TAG = "server";
-
-
     ServerSocket servsock;
 
     //constructer to initialize the serversocket
@@ -34,20 +28,28 @@ public class Server {
     public int getPort() {
         return servsock.getLocalPort();
     }
-    public void sendFiles(File myFile) {
+
+    public void sendFiles(File inFile) {
+        //ServerSocket servsock = s;
+        Socket sock = null;
+        OutputStream os = null;
+        BufferedInputStream bis = null;
+        if (Thread.currentThread().isInterrupted()) {
+            return;
+        }
         try {
             //file to transfer
             //this is an example file that exists on my phone
-            //File myFile = new File("/mnt/sdcard/download/download.jpg");
+            File myFile = new File("/mnt/sdcard/download/pearing.png");
 
             //while statement will be changed to go through
-            //the text file which will contain
-            //the address/location of the file we wish to transfer
+            //a file returned from what Karen is working on
 
-            //while (true) {
 
             //accept socket connection
-            Socket sock = servsock.accept();
+
+            sock = servsock.accept();
+            //servsock.bind(sock.getLocalSocketAddress());
 
             //this sets the size of the buffer to be the size of the file
             //this allows the WHOLE file to be transferred
@@ -60,19 +62,28 @@ public class Server {
             System.out.println(myFile.length());
 
             //input stream for socket
-            BufferedInputStream bis = new BufferedInputStream(new FileInputStream(myFile));
+            bis = new BufferedInputStream(new FileInputStream(myFile));
             bis.read(mybytearray, 0, mybytearray.length);
 
             //output stream for socket
-            OutputStream os = sock.getOutputStream();
-            os.write(mybytearray, 0, mybytearray.length);
+            os = sock.getOutputStream();
 
-            //flushes value
-            os.flush();
-            sock.close();
-            servsock.close();
-        }catch (IOException e) {
-            Log.e(TAG, "could not complete file transfer");
+            os.write(mybytearray, 0, mybytearray.length);
+            //}
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        finally{
+            //flushes value
+            try {
+                os.flush();
+                sock.close();
+            } catch (IOException e) {
+                Log.e(TAG, "could not complete file transfer");
+            } catch(NullPointerException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 }

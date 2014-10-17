@@ -1,27 +1,25 @@
 package com.example.wifile;
 
-import android.graphics.Bitmap;
 import android.net.wifi.WifiManager;
-import android.os.StrictMode;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.text.format.Formatter;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import java.io.IOException;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.OutputStream;
-import java.net.SocketException;
 
 
+/*
+
+COMPLETELY USELESS NOW
+for demo purposes when server button is pressed
+
+ */
 public class ServerActivity extends ActionBarActivity {
     ServerSocket serv = null;
     Thread newThread;
