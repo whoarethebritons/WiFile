@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:orientation="vertical"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-    <TextView android:layout_width="fill_parent"
+    <TextView android:layout_width="0dp"
+              android:layout_weight=".7"
               android:layout_height="fill_parent"
               android:gravity="left"
+              android:padding="4dp"
               android:id = "@+id/nameView"
               android:text = "@+id/nameView"
               android:textAppearance="?android:attr/textAppearanceMedium" />
@@ -16,11 +18,11 @@
             android:layout_width="?android:attr/listPreferredItemHeight"
             android:layout_height="fill_parent"
             android:text=""
-            android:paddingLeft="@dimen/default_gap"
+        android:paddingLeft="@dimen/default_gap"
             android:paddingRight="@dimen/default_gap"
             android:id="@+id/checkBox"
             android:focusable="false"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"/>
 
-</RelativeLayout>
+</LinearLayout>
