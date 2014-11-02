@@ -13,7 +13,7 @@ import android.view.View;
 import android.widget.Checkable;
 import android.widget.ListView;
 import android.os.Environment;
-import java.io.File;
+import java.io.*;
 import java.util.*;
 import android.util.SparseBooleanArray;
 
@@ -27,12 +27,12 @@ public class FileManagerActivity extends ListActivity {
     private String mPath;
     //Create the history file, where we will store the files to be added
     // to the computer. The file will be stored on the the phone's sd card
-    File historyFile = new File("/sdcard/WiFileHistory.txt");
+    String FILEHISTORY = "fileHistory";
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-       /*---------------------Get the SD card directory into a File List--------------------------*/
+       /*---------------------Get the SD card directory into a File List--------------------------------------*/
         //set mPath to be sdcard
         //Environment.getExternalStorageDirectory();
         //gets all files in the SD card
@@ -76,13 +76,14 @@ public class FileManagerActivity extends ListActivity {
         Object[] storeDirs = dirs.toArray(); //Convert List to an object array
         String[] fileDirectory = Arrays.copyOf(storeDirs, storeDirs.length,String[].class);//Convert to type String
 
-        /*------------------------------------------------------------------------------------------*/
+        /*-----------------------------------------------------------------------------------------------------------*/
        // ArrayAdapter adapter = new ArrayAdapter(this,android.R.layout.simple_list_item_checked, android.R.id.text1, dirs);
         //setListAdapter((new ArrayAdapter(this, R.layout.activity_filelist, R.id.nameView, dirs)));
 
         //Create checkListAdaptor
         CheckAdapter checkBox = new CheckAdapter(this,android.R.layout.simple_list_item_checked, android.R.id.text1,
                 fileDirectory);
+        setListAdapter(checkBox);
         //(Context context, int resource, int textViewResourceID, T[] objects )
         //(context, references a single textview, field ID references a textview in the larger layout resource,
         // array of objects to store into arrayadapter)
@@ -92,6 +93,7 @@ public class FileManagerActivity extends ListActivity {
         //listView.setOnItemClickListener(this);
     }
 
+    //CheckAdapter is for each checkbox in the list
     public class CheckAdapter extends ArrayAdapter<String> {
         Context context;
         int resource;
@@ -99,28 +101,39 @@ public class FileManagerActivity extends ListActivity {
 
         public CheckAdapter(Context context, int resource, int textViewResourceID, String[] list) {
             super(context, resource, textViewResourceID, list);
-
             checkStates = new SparseBooleanArray(list.length);
         }
+
+        public boolean isChecked(int position) {
+            return checkStates.get(position, false);
+        }
+
+        public void setChecked(int position, boolean checked) {
+            checkStates.put(position, checked);
+        }
+
+        public void toggle(int position, boolean checked) {
+            setChecked(position, !checked);
+        }
     }
-
-    public boolean isChecked(int position) {
-
-        return checkStates.get(position, false);
-    }
-
-    public void setChecked(int position,boolean checked) {
-        checkStates.put(position,checked);
-    }
-
-    public void toggle(int position, boolean checked) {
-        setChecked(position, !checked);
-    }
-
-    //Is this the done button?
+    //DONE button listener will retrieve all checked files
     public void finish()
     {
+        //Collect all the files
+        //send all filenames to writeToFile(String [] fileList)
+    }
 
+    //Writes to the internal file, FILEHISTORY
+    public void writeToFile() throws IOException
+    {
+        String string = "some filename";
+        FileOutputStream fos = openFileOutput(FILEHISTORY, Context.MODE_PRIVATE);
+        try {
+            fos.write(string.getBytes());
+        } catch(IOException e) {
+
+        }
+        fos.close();
     }
 
     //Shows the files within each folder
@@ -161,12 +174,4 @@ public class FileManagerActivity extends ListActivity {
       return getIntent();
     }
 
-    //how to retrieve check marks?
-    public File[] getSelectedFiles(List checkDirs) {
-        File[] checked = null;
-        for(int i = 0; i< checkDirs.size(); i++) {
-            checked[i] = (File) checkDirs.get(i);
-        }
-        return checked;
-    }
 }

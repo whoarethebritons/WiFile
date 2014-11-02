@@ -30,10 +30,9 @@ public class ServerActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         //What does this do?
         setContentView(R.layout.activity_server);
-<<<<<<< HEAD
+
         //Must make a new thread to do a background process on the app
-        newThread();
-=======
+        //newThread();
 
         newThread = new Thread(new Runnable() {
             public void run() {
@@ -41,7 +40,6 @@ public class ServerActivity extends ActionBarActivity {
             }
         });
         newThread.start();
->>>>>>> f374f537cb8f8656edf9d09e1b142626824a5d7c
 
         /*
         if (android.os.Build.VERSION.SDK_INT > 8)
@@ -52,8 +50,6 @@ public class ServerActivity extends ActionBarActivity {
             serverMethod();
         }
         */
-
-
     }
 
 
@@ -128,13 +124,10 @@ public class ServerActivity extends ActionBarActivity {
 
             //file to transfer
             //this is an example file that exists on my phone
-<<<<<<< HEAD
-            File myFile = new File("/mnt/sdcard/download/download.jpg");
+            //File myFile = new File("/mnt/sdcard/download/download.jpg");
             /* getting a file array */
 
-=======
             File myFile = new File("/mnt/sdcard/download/pearing.png");
->>>>>>> f374f537cb8f8656edf9d09e1b142626824a5d7c
 
                 //while statement will be changed to go through
                 //an array of files
