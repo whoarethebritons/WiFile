@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/app/build/exploded-aar/com.android.support/appcompat-v7/20.0.0/20.0.0.iml" filepath="$PROJECT_DIR$/app/build/exploded-aar/com.android.support/appcompat-v7/20.0.0/20.0.0.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../AndroidDevelopment/adt-bundle-windows-x86-20131030/sdk/extras/google/webdriver/SimpleApp/SimpleApp.iml" filepath="$PROJECT_DIR$/../../AndroidDevelopment/adt-bundle-windows-x86-20131030/sdk/extras/google/webdriver/SimpleApp/SimpleApp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../AndroidDevelopment/adt-bundle-windows-x86-20131030/sdk/extras/google/webdriver/TestAnAndroidWebApp/TestAnAndroidWebApp.iml" filepath="$PROJECT_DIR$/../../AndroidDevelopment/adt-bundle-windows-x86-20131030/sdk/extras/google/webdriver/TestAnAndroidWebApp/TestAnAndroidWebApp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../AndroidDevelopment/adt-bundle-windows-x86-20131030/sdk/extras/android/support/multidex/library/android-support-multidex.iml" filepath="$PROJECT_DIR$/../../AndroidDevelopment/adt-bundle-windows-x86-20131030/sdk/extras/android/support/multidex/library/android-support-multidex.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../AndroidDevelopment/adt-bundle-windows-x86-20131030/sdk/extras/android/support/multidex/instrumentation/android-support-multidex-instrumentation.iml" filepath="$PROJECT_DIR$/../../AndroidDevelopment/adt-bundle-windows-x86-20131030/sdk/extras/android/support/multidex/instrumentation/android-support-multidex-instrumentation.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../AndroidDevelopment/adt-bundle-windows-x86-20131030/sdk/extras/android/support/v17/leanback/android-support-v17-leanback.iml" filepath="$PROJECT_DIR$/../../AndroidDevelopment/adt-bundle-windows-x86-20131030/sdk/extras/android/support/v17/leanback/android-support-v17-leanback.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../AndroidDevelopment/adt-bundle-windows-x86-20131030/sdk/extras/android/support/v7/appcompat/android-support-v7-appcompat.iml" filepath="$PROJECT_DIR$/../../AndroidDevelopment/adt-bundle-windows-x86-20131030/sdk/extras/android/support/v7/appcompat/android-support-v7-appcompat.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../AndroidDevelopment/adt-bundle-windows-x86-20131030/sdk/extras/android/support/v7/gridlayout/android-support-v7-gridlayout.iml" filepath="$PROJECT_DIR$/../../AndroidDevelopment/adt-bundle-windows-x86-20131030/sdk/extras/android/support/v7/gridlayout/android-support-v7-gridlayout.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../AndroidDevelopment/adt-bundle-windows-x86-20131030/sdk/extras/android/support/v7/mediarouter/android-support-v7-mediarouter.iml" filepath="$PROJECT_DIR$/../../AndroidDevelopment/adt-bundle-windows-x86-20131030/sdk/extras/android/support/v7/mediarouter/android-support-v7-mediarouter.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../AndroidDevelopment/adt-bundle-windows-x86-20131030/sdk/extras/android/support/v7/palette/android-support-v7-palette.iml" filepath="$PROJECT_DIR$/../../AndroidDevelopment/adt-bundle-windows-x86-20131030/sdk/extras/android/support/v7/palette/android-support-v7-palette.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/build/source/buildConfig/buildConfig.iml" filepath="$PROJECT_DIR$/app/build/source/buildConfig/buildConfig.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/build/manifests/debug/debug.iml" filepath="$PROJECT_DIR$/app/build/manifests/debug/debug.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/src/main/main.iml" filepath="$PROJECT_DIR$/app/src/main/main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/build/source/r/r.iml" filepath="$PROJECT_DIR$/app/build/source/r/r.iml" />
+    </modules>
+  </component>
+</project>
+
