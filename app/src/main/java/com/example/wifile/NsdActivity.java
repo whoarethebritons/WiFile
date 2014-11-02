@@ -18,9 +18,11 @@ public class NsdActivity extends Activity {
     NsdManager wfNsdManager;
     NsdServiceInfo wfService;
     NsdHelper wfHelper;
-    int mPort;
+    //difference is wf is for transmitting service
+    //m is for server
+    int mPort, wfPort;
     private String wfIP;
-    Server wfServer;
+    Server wfServer, nsServer;
 
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -28,9 +30,19 @@ public class NsdActivity extends Activity {
 
         //creating instances of other classes
         //necessary for file transfer
+        /*
+        try {
+            ServerSocket s = new ServerSocket(0);
+            System.out.println(wfPort);
+            wfPort = s.getLocalPort();
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
+        */
         wfHelper = new NsdHelper(this);
-        wfServer = new Server();
-
+        wfServer = new Server(this);
+        nsServer = new Server(this);
+        wfPort = nsServer.getPort();
         //retrieving port
         mPort = wfServer.getPort();
         //telling NSD what port the server is on
@@ -38,7 +50,7 @@ public class NsdActivity extends Activity {
 
         //finds IP of current device
         //may be unnecessary with the way nsd works
-        findDeviceIP(this);
+        //findDeviceIP(this);
 
         //without a new thread for the server transfers
         //there will be a NetworkOnMainThreadException
@@ -48,6 +60,12 @@ public class NsdActivity extends Activity {
             }
         });
         newThread.start();
+        Thread nsThread = new Thread(new Runnable() {
+            public void run() {
+                nsMethod();
+            }
+        });
+        nsThread.start();
     }
 
     //method to send files
@@ -56,6 +74,10 @@ public class NsdActivity extends Activity {
         //the input file here is not used at all
         //since we're going to have a different way of doing this
         wfServer.sendFiles(new File("/mnt/sdcard"));
+    }
+    public void nsMethod() {
+        System.out.println("sending port");
+        nsServer.sendPort(mPort);
     }
 
     public void findDeviceIP(Context context) {
@@ -76,7 +98,7 @@ public class NsdActivity extends Activity {
     @Override
     protected void onPause() {
         if (wfHelper != null) {
-            wfHelper.tearDown();
+            //wfHelper.tearDown();
         }
         super.onPause();
     }
@@ -85,14 +107,17 @@ public class NsdActivity extends Activity {
     protected void onResume() {
         super.onResume();
         if (wfHelper != null) {
-            wfHelper.registerService(mPort);
+            wfHelper.registerService(wfPort);
             wfHelper.discoverServices();
+            System.out.println("wfPort: " + wfPort);
         }
     }
 
     @Override
     protected void onDestroy() {
         wfHelper.tearDown();
+        nsServer.close();
+        wfServer.close();
         super.onDestroy();
     }
     /*

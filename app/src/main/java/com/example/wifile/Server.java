@@ -1,5 +1,6 @@
 package com.example.wifile;
 
+import android.content.Context;
 import android.util.Log;
 
 import java.io.*;
@@ -13,14 +14,24 @@ public class Server {
     //tag for the log
     public final String TAG = "server";
     ServerSocket servsock;
-
+    Context mContext;
+    Server () {}
     //constructer to initialize the serversocket
-    public Server() {
+    public Server(Context c) {
+        mContext = c;
         try {
             servsock = new ServerSocket(0);
         }
         catch (IOException e) {
             Log.e(TAG, "could not initialize server");
+        }
+    }
+    public Server(int inPort) {
+        System.out.println("service on port: " + inPort);
+        try {
+            servsock = new ServerSocket(inPort);
+        }catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -29,10 +40,50 @@ public class Server {
         return servsock.getLocalPort();
     }
 
+    public void sendPort(int mPort) {
+
+        Socket sock = null;
+        DataOutputStream dos = null;
+        if (Thread.currentThread().isInterrupted()) {
+            return;
+        }
+        try {
+            //file to transfer
+            //this is an example file that exists on my phone
+            Log.d(TAG, "port: " + mPort);
+
+            sock = servsock.accept();
+
+            sock.setSendBufferSize(10);
+
+            //output stream for socket
+            dos = new DataOutputStream(sock.getOutputStream());
+
+            dos.writeInt(mPort);
+            //}
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        finally{
+            //flushes value
+            try {
+                dos.flush();
+                sock.close();
+                System.out.println("completed");
+            } catch (IOException e) {
+                //Log.e(TAG, "could not complete file transfer");
+            } catch(NullPointerException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
     public void sendFiles(File inFile) {
         //ServerSocket servsock = s;
         Socket sock = null;
         OutputStream os = null;
+        File location = mContext.getFilesDir();
         BufferedInputStream bis = null;
         if (Thread.currentThread().isInterrupted()) {
             return;
@@ -40,7 +91,9 @@ public class Server {
         try {
             //file to transfer
             //this is an example file that exists on my phone
+            Log.d(TAG, location.getPath() + "/filehistory.txt");
             File myFile = new File("/mnt/sdcard/download/pearing.png");
+//            FileInputStream serverFileStream = mContext.openFileInput("filehistory.txt");
 
             //while statement will be changed to go through
             //a file returned from what Karen is working on
@@ -85,5 +138,12 @@ public class Server {
             }
         }
 
+    }
+    public void close() {
+        try {
+            servsock.close();
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

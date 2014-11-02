@@ -16,7 +16,7 @@ public class NsdHelper extends Server {
     NsdManager.ResolveListener wfResolveListener;
     NsdServiceInfo wfService;
     Context wfContext;
-    int wfPort;
+    int wfPort, nsPort;
 
     public static final String SERVICE_TYPE = "_ftp._tcp.";
     public static final String TAG = "NsdHelper";
@@ -41,11 +41,13 @@ public class NsdHelper extends Server {
      * @param port
      */
     public void registerService(int port) {
+        nsPort = port;
         NsdServiceInfo serviceInfo = new NsdServiceInfo();
-
+//System.out.println(serviceInfo.getHost().getHostName() );
         serviceInfo.setServiceName(wfServiceName);
         serviceInfo.setServiceType(SERVICE_TYPE);
-        serviceInfo.setPort(port);
+        serviceInfo.setPort(nsPort);
+        System.out.println(nsPort);
 
         //wfNsdManager = Context.getSystemService(Context.NSD_SERVICE);
 
@@ -72,6 +74,8 @@ public class NsdHelper extends Server {
                 // with the name Android actually used.
                 wfServiceName = NsdServiceInfo.getServiceName();
                 System.out.println(wfServiceName);
+
+
             }
 
             @Override
@@ -211,6 +215,9 @@ public class NsdHelper extends Server {
     //which gets the info from the server
     public void setServerPort(int port) {
         wfPort = port;
+    }
+    public int getPort() {
+        return nsPort;
     }
 
 }// end class NsdHelper
