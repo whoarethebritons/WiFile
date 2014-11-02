@@ -1,0 +1,8 @@
+NSD broadcasting
+
+Server transmits file when connected to from client with
+specified port & ip address
+
+I do not have a working service broadcaster for client yet
+
+loop for server to go through multiple files not implemeneted yet
