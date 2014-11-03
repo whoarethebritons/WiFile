@@ -18,16 +18,14 @@
             android:layout_width="?android:attr/listPreferredItemHeight"
             android:layout_height="fill_parent"
             android:text=""
-<<<<<<< HEAD
-=======
-        android:paddingLeft="@dimen/default_gap"
-            android:paddingRight="@dimen/default_gap"
->>>>>>> aa995a69015c67a2ac913fbed2236c527c91d414
             android:id="@+id/checkBox"
             android:focusable="false"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true" >
         </CheckBox>
+    <!-- This is supposed to be in checkbox:
+           android:paddingLeft="@dimen/default_gap"
+           android:paddingRight="@dimen/default_gap"-->
 
 
 </LinearLayout>
