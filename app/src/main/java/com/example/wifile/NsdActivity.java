@@ -1,19 +1,20 @@
 package com.example.wifile;
 
 import android.app.Activity;
+import android.app.ListActivity;
 import android.content.Context;
 import android.net.nsd.NsdManager;
 import android.net.nsd.NsdServiceInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
-
+import android.widget.ArrayAdapter;
 import java.io.File;
 
 /**
  * Created by Kait on 10/4/2014.
  */
-public class NsdActivity extends Activity {
+public class NsdActivity extends ListActivity {
 
     NsdManager wfNsdManager;
     NsdServiceInfo wfService;
@@ -21,6 +22,7 @@ public class NsdActivity extends Activity {
     //difference is wf is for transmitting service
     //m is for server
     int mPort, wfPort;
+    ArrayAdapter availableServices;
     private String wfIP;
     Server wfServer, nsServer;
 
@@ -39,10 +41,14 @@ public class NsdActivity extends Activity {
             e.printStackTrace();
         }
         */
+
         wfHelper = new NsdHelper(this);
         wfServer = new Server(this);
         nsServer = new Server(this);
         wfPort = nsServer.getPort();
+
+        //retrieve list of services
+        availableServices = wfHelper.getAvailableServices();
         //retrieving port
         mPort = wfServer.getPort();
         //telling NSD what port the server is on
@@ -128,5 +134,6 @@ public class NsdActivity extends Activity {
     public String getwfIP() {
         return wfIP;
     }
+
 }
 
