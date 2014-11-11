@@ -12,6 +12,7 @@
             android:icon="@drawable/wifileicon"
             android:label="@string/app_name"
             android:theme="@style/AppTheme" >
+            android:debuggable="true"
         <activity
                 android:name="com.example.wifile.MainActivity"
                 android:label="@string/app_name" >
@@ -53,6 +54,7 @@
                     android:name="android.support.PARENT_ACTIVITY"
                     android:value="MainActivity" />
         </activity>
+
 
     </application>
 

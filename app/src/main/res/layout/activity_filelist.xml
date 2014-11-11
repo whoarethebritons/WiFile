@@ -23,6 +23,7 @@
             android:id="@+id/checkBox"
             android:focusable="false"
             android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"/>
+            android:layout_alignParentEnd="true"
+            android:onClick="rowChecked"/>
 
 </LinearLayout>
