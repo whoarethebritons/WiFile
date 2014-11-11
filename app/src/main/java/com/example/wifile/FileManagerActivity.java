@@ -23,12 +23,19 @@ import android.util.SparseBooleanArray;
  * Created by Eden on 9/22/2014.
  */
 public class FileManagerActivity extends ListActivity {
+<<<<<<< HEAD
     private CheckAdapter checkAdapter;
+=======
+    private SparseBooleanArray checkStates;
+>>>>>>> 6272efb053fbec6f77f54c003a91372abcb04de2
     private String mPath;
     //Create the history file, where we will store the files to be added
     // to the computer. The file will be stored on the the phone's sd card
     String FILEHISTORY = "fileHistory";
+<<<<<<< HEAD
     String[] fileDirectory;
+=======
+>>>>>>> 6272efb053fbec6f77f54c003a91372abcb04de2
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,6 +82,7 @@ public class FileManagerActivity extends ListActivity {
         //sorts the array list in alphabetical order
         Collections.sort(dirs);
         Object[] storeDirs = dirs.toArray(); //Convert List to an object array
+<<<<<<< HEAD
         fileDirectory = Arrays.copyOf(storeDirs, storeDirs.length,String[].class);//Convert to type String
 
         /*-----------------------------------------------------------------------------------------------------------*/
@@ -149,6 +157,70 @@ public class FileManagerActivity extends ListActivity {
         fos.close();
     }
 
+=======
+        String[] fileDirectory = Arrays.copyOf(storeDirs, storeDirs.length,String[].class);//Convert to type String
+
+        /*-----------------------------------------------------------------------------------------------------------*/
+       // ArrayAdapter adapter = new ArrayAdapter(this,android.R.layout.simple_list_item_checked, android.R.id.text1, dirs);
+        //setListAdapter((new ArrayAdapter(this, R.layout.activity_filelist, R.id.nameView, dirs)));
+
+        //Create checkListAdaptor
+        CheckAdapter checkBox = new CheckAdapter(this,android.R.layout.simple_list_item_checked, android.R.id.text1,
+                fileDirectory);
+        setListAdapter(checkBox);
+        //(Context context, int resource, int textViewResourceID, T[] objects )
+        //(context, references a single textview, field ID references a textview in the larger layout resource,
+        // array of objects to store into arrayadapter)
+
+        //Show the ListView and add OnClickListeners
+        //final ListView listView = getListView();
+        //listView.setOnItemClickListener(this);
+    }
+
+    //CheckAdapter is for each checkbox in the list
+    public class CheckAdapter extends ArrayAdapter<String> {
+        Context context;
+        int resource;
+        int textViewResourceID;
+
+        public CheckAdapter(Context context, int resource, int textViewResourceID, String[] list) {
+            super(context, resource, textViewResourceID, list);
+            checkStates = new SparseBooleanArray(list.length);
+        }
+
+        public boolean isChecked(int position) {
+            return checkStates.get(position, false);
+        }
+
+        public void setChecked(int position, boolean checked) {
+            checkStates.put(position, checked);
+        }
+
+        public void toggle(int position, boolean checked) {
+            setChecked(position, !checked);
+        }
+    }
+    //DONE button listener will retrieve all checked files
+    public void finish()
+    {
+        //Collect all the files
+        //send all filenames to writeToFile(String [] fileList)
+    }
+
+    //Writes to the internal file, FILEHISTORY
+    public void writeToFile() throws IOException
+    {
+        String string = "some filename";
+        FileOutputStream fos = openFileOutput(FILEHISTORY, Context.MODE_PRIVATE);
+        try {
+            fos.write(string.getBytes());
+        } catch(IOException e) {
+
+        }
+        fos.close();
+    }
+
+>>>>>>> 6272efb053fbec6f77f54c003a91372abcb04de2
     //Shows the files within each folder
     public void onListItemClick(ListView l, View v, int position, long id) {
 
@@ -184,7 +256,11 @@ public class FileManagerActivity extends ListActivity {
     }
 
     public Intent getSupportParentActivityIntent () {
+<<<<<<< HEAD
         return getIntent();
+=======
+      return getIntent();
+>>>>>>> 6272efb053fbec6f77f54c003a91372abcb04de2
     }
 
 }
