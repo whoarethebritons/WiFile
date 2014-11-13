@@ -26,7 +26,11 @@ public class ServerActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //What does this do?
         setContentView(R.layout.activity_server);
+
+        //Must make a new thread to do a background process on the app
+        //newThread();
 
         newThread = new Thread(new Runnable() {
             public void run() {
@@ -44,8 +48,6 @@ public class ServerActivity extends ActionBarActivity {
             serverMethod();
         }
         */
-
-
     }
 
 
@@ -120,12 +122,15 @@ public class ServerActivity extends ActionBarActivity {
 
             //file to transfer
             //this is an example file that exists on my phone
+            //File myFile = new File("/mnt/sdcard/download/download.jpg");
+            /* getting a file array */
+
             File myFile = new File("/mnt/sdcard/download/pearing.png");
 
-            //while statement will be changed to go through
-            //an array of files
-            //I think
-            //while (true) {
+                //while statement will be changed to go through
+                //an array of files
+                //I think
+                //while (true) {
                 //accept socket connection
 
                 sock = servsock.accept();

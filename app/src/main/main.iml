@@ -2,7 +2,11 @@
 <module type="JAVA_MODULE" version="4">
   <component name="FacetManager">
     <facet type="android" name="Android">
-      <configuration />
+      <configuration>
+        <proGuardCfgFiles>
+          <file>file://C:/Program Files/AndroidSDK/tools/proguard/proguard-android.txt</file>
+        </proGuardCfgFiles>
+      </configuration>
     </facet>
   </component>
   <component name="NewModuleRootManager" inherit-compiler-output="true">
@@ -11,11 +15,14 @@
       <sourceFolder url="file://$MODULE_DIR$/gen" isTestSource="false" generated="true" />
       <sourceFolder url="file://$MODULE_DIR$/java" isTestSource="false" />
     </content>
-    <orderEntry type="jdk" jdkName="Android API 19 Platform" jdkType="Android SDK" />
+    <orderEntry type="jdk" jdkName="Android 4.4.2 Google APIs" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="classes" level="project" />
+    <orderEntry type="library" name="classes1" level="project" />
     <orderEntry type="library" name="internal_impl-20.0.0" level="project" />
     <orderEntry type="library" name="20.0.0" level="project" />
+    <orderEntry type="library" exported="" name="classes" level="project" />
+    <orderEntry type="library" exported="" name="internal_impl-20.0.0" level="project" />
+    <orderEntry type="library" exported="" name="20.0.0" level="project" />
   </component>
 </module>
 
