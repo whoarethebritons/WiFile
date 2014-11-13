@@ -21,16 +21,8 @@
             android:id="@+id/checkBox"
             android:focusable="false"
             android:layout_alignParentRight="true"
-<<<<<<< HEAD
             android:layout_alignParentEnd="true"
-            android:onClick="rowChecked"/>
-=======
-            android:layout_alignParentEnd="true" >
-        </CheckBox>
-    <!-- This is supposed to be in checkbox:
-           android:paddingLeft="@dimen/default_gap"
-           android:paddingRight="@dimen/default_gap"-->
->>>>>>> 6272efb053fbec6f77f54c003a91372abcb04de2
+            android:onClick="onCheckBox"/>
 
 
 </LinearLayout>

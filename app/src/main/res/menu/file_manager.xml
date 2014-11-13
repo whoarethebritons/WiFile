@@ -2,6 +2,5 @@
     <item android:id="@+id/action_back"
           android:title="Back"/>
     <item android:id="@+id/action_done"
-          android:title="Done"
-          android:onClick="finish"/>
+          android:title="Done"/>
 </menu>

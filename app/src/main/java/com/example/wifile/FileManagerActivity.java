@@ -7,6 +7,9 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import android.util.SparseBooleanArray;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -31,11 +34,31 @@ public class FileManagerActivity extends ListActivity {
     private CheckAdapter checkAdapter;
     private SparseBooleanArray checkStates;
     private String mPath;
+    String TAG = "fileman";
     //Create the history file, where we will store the file names, which will be added
     // to the computer. The file will be stored on the the phone's sd card
     String FILEHISTORY = "fileHistory";
     String[] fileDirectory;
 
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.file_manager, menu);
+        return true;
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.action_done:
+                //writes file
+                writeFile();
+                //closes activity
+                this.finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -117,30 +140,41 @@ public class FileManagerActivity extends ListActivity {
             checkStates.put(position, checked);
         }
 
-        public void toggle(int position, boolean checked) {
-            setChecked(position, !checked);
+        public void toggle(int position) {
+            //isChecked gets current value of checkbox
+            //inverts it to "toggle"
+            //sets it to opposite value
+            setChecked(position, !isChecked(position));
         }
     }
     //DONE button listener will retrieve all checked files
-    public void finish()
+    public void writeFile()
     {
-        //Collect all the files
-        //send all filenames to writeToFile(String [] fileList)
-        for(int i = 0; i < checkStates.size(); i++) {
-            if(checkStates.get(i)) {
-                writeToFile(fileDirectory[i]);
-            }
-        }
-    }
-
-    //Writes to the internal file, FILEHISTORY
-    public void writeToFile(String inName)
-    {
+        //file output
         FileOutputStream fos = null;
         try {
-            String string = inName;
             fos = openFileOutput(FILEHISTORY, Context.MODE_PRIVATE);
-            fos.write(string.getBytes());
+
+
+            //Collect all the files
+            //send all filenames to writeToFile(String [] fileList)
+
+            //checks size of array
+            for(int i = 0; i < checkStates.size(); i++) {
+                //
+                //testing
+                Log.v(TAG,"array size: " + checkStates.size());
+                if(checkStates.valueAt(i)) {
+                //gets the string at that location, writes it to file
+                    String string = mPath + fileDirectory[checkStates.keyAt(i)]+ "\n";
+                    fos.write(string.getBytes());
+
+                    //all testing
+                    Log.v(TAG,"i is: " + i);
+                    Log.v(TAG,"The key is: " + checkStates.keyAt(i));
+                    Log.v(TAG,fileDirectory[checkStates.keyAt(i)]);
+                }
+            }
         }catch(IOException e) {
             Log.e("fileman","IOEXCEPTION");
         }finally{
@@ -150,6 +184,18 @@ public class FileManagerActivity extends ListActivity {
                 Log.e("fileman","IOEXCEPTION");
             }
         }
+    }
+
+
+    public void onCheckBox(View view) {
+        //gets which row: position & filename
+        final int position = getListView().getPositionForView((View) view.getParent());
+        String filename = (String) getListAdapter().getItem(position);
+
+        //testing purposes
+        Log.v(TAG,"toggled! " + filename);
+        //toggles the thing
+        checkAdapter.toggle(position);
     }
 
 
