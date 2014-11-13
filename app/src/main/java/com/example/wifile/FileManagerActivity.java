@@ -1,21 +1,25 @@
 package com.example.wifile;
 
-import android.app.ActionBar;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-//import android.support.v7.app.ActionBarActivity;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.widget.ArrayAdapter;
-import android.view.View;
-import android.widget.Checkable;
-import android.widget.ListView;
 import android.os.Environment;
-import java.io.*;
-import java.util.*;
+import android.util.Log;
 import android.util.SparseBooleanArray;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+//import android.support.v7.app.ActionBarActivity;
 
 /**
  * FileManagerActivity is responsible for retrieving the selected files from the checkboxes
@@ -122,19 +126,30 @@ public class FileManagerActivity extends ListActivity {
     {
         //Collect all the files
         //send all filenames to writeToFile(String [] fileList)
+        for(int i = 0; i < checkStates.size(); i++) {
+            if(checkStates.get(i)) {
+                writeToFile(fileDirectory[i]);
+            }
+        }
     }
 
     //Writes to the internal file, FILEHISTORY
-    public void writeToFile() throws IOException
+    public void writeToFile(String inName)
     {
-        String string = "some filename";
-        FileOutputStream fos = openFileOutput(FILEHISTORY, Context.MODE_PRIVATE);
+        FileOutputStream fos = null;
         try {
+            String string = inName;
+            fos = openFileOutput(FILEHISTORY, Context.MODE_PRIVATE);
             fos.write(string.getBytes());
-        } catch(IOException e) {
-
+        }catch(IOException e) {
+            Log.e("fileman","IOEXCEPTION");
+        }finally{
+            try {
+                fos.close();
+            }catch(IOException e) {
+                Log.e("fileman","IOEXCEPTION");
+            }
         }
-        fos.close();
     }
 
 

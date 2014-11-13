@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pre-dex-items>
+
+    <item
+        dex="C:\Users\Eden\workspace\WiFile\app\build\intermediates\pre-dexed\debug\internal_impl-20.0.0-acd7b1c777e562b7789d01cefd06f86892232c6b.jar"
+        jar="C:\Users\Eden\workspace\WiFile\app\build\intermediates\exploded-aar\com.android.support\support-v4\20.0.0\libs\internal_impl-20.0.0.jar"
+        jumboMode="false"
+        revision="20.0.0"
+        sha1="e40b3078e3fbd353c9f44da8df25a8fc0078209d"/>
+    <item
+        dex="C:\Users\Eden\workspace\WiFile\app\build\intermediates\pre-dexed\debug\support-annotations-20.0.0-35aa74b91c32d8bd31aa874bf2f1509ef006ef4d.jar"
+        jar="C:\Users\Eden\Documents\adt-bundle-windows-x86_64-20140321\sdk\extras\android\m2repository\com\android\support\support-annotations\20.0.0\support-annotations-20.0.0.jar"
+        jumboMode="false"
+        revision="20.0.0"
+        sha1="9d9013e9ff35fc3756411e62873c363c70c638fa"/>
+    <item
+        dex="C:\Users\Eden\workspace\WiFile\app\build\intermediates\pre-dexed\debug\classes-384a1b197a3ad9bb3e21533075811ca05e68a240.jar"
+        jar="C:\Users\Eden\workspace\WiFile\app\build\intermediates\exploded-aar\com.android.support\gridlayout-v7\20.0.0\classes.jar"
+        jumboMode="false"
+        revision="20.0.0"
+        sha1="e5531cb41e35c81a051a274945542f6b31e4c97e"/>
+    <item
+        dex="C:\Users\Eden\workspace\WiFile\app\build\intermediates\pre-dexed\debug\classes-259e5303586deda17c6b470fdebe204ef8244ac9.jar"
+        jar="C:\Users\Eden\workspace\WiFile\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\20.0.0\classes.jar"
+        jumboMode="false"
+        revision="20.0.0"
+        sha1="f21927d22fe31889ecce94dd697a2e75b137e0ef"/>
+    <item
+        dex="C:\Users\Eden\workspace\WiFile\app\build\intermediates\pre-dexed\debug\classes-a5f94072cd5fb86cd1f62c92e2b2d376ecc4d567.jar"
+        jar="C:\Users\Eden\workspace\WiFile\app\build\intermediates\exploded-aar\com.android.support\support-v4\20.0.0\classes.jar"
+        jumboMode="false"
+        revision="20.0.0"
+        sha1="8694693636ab36910c8100ce527c258ff3ebece0"/>
+
+</pre-dex-items>
