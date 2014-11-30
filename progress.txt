@@ -6,3 +6,10 @@ specified port & ip address
 I do not have a working service broadcaster for client yet
 
 loop for server to go through multiple files not implemeneted yet
+
+necessary changes:
+1. app currently crashes when resumed
+2. multiple file transfer
+3. check the file that stores what is to be transfered
+4. set up screen
+5. notifications when syncing
