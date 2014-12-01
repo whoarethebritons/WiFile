@@ -9,12 +9,15 @@ import android.net.nsd.NsdServiceInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.Socket;
 
 public class MainActivity extends Activity {
     private static final int REQUEST_PATH = 1;
@@ -29,25 +32,46 @@ public class MainActivity extends Activity {
     private String wfIP;
     Server wfServer, nsServer;
     Thread newThread, nsThread;
+    Context inContext;
+    String TAG = "main";
 
     NotificationManager mNotificationManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+        inContext = this;
         //eventually some code to pull up notification icon
 
-        wfHelper = new NsdHelper(this);
-        wfServer = new Server(this);
+        wfHelper = new NsdHelper(inContext);
+        Log.i(TAG, "helper created");
+        wfServer = new Server(inContext);
+        Log.i(TAG, "wfserver created");
+
+        //retrieving port
+        mPort = wfServer.getPort();
+        Log.i(TAG, "wfserver gotten");
+        //telling NSD what port the server is on
+        wfHelper.setServerPort(mPort);
+        Log.i(TAG, "setserverport called");
+
+
         nsServer = new Server(this);
+        Log.i(TAG, "nserver created");
         wfPort = nsServer.getPort();
+        Log.i(TAG, "wfport retrieved");
+
+
+        //start discovery
+        wfHelper.registerService(wfPort);
+        wfHelper.discoverServices();
+        System.out.println("wfPort: " + wfPort);
 
         //retrieve list of services
         availableServices = wfHelper.getAvailableServices();
-        //retrieving port
-        mPort = wfServer.getPort();
-        //telling NSD what port the server is on
-        wfHelper.setServerPort(mPort);
+
 
         //finds IP of current device
         //may be unnecessary with the way nsd works
@@ -55,18 +79,50 @@ public class MainActivity extends Activity {
 
         //without a new thread for the server transfers
         //there will be a NetworkOnMainThreadException
+
+
         newThread = new Thread(new Runnable() {
+
             public void run() {
-                serverMethod();
+                try {
+                    while (true) {
+                        final Socket s = wfServer.getServsock().accept();
+                        Thread t = new Thread(new Runnable() {
+                            public void run() {
+                                serverMethod(s);
+                            }
+                        });
+                        t.start();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
             }
         });
-        newThread.start();
+
+
         nsThread = new Thread(new Runnable() {
             public void run() {
-                nsMethod();
+                try {
+                    while (true) {
+                        final Socket s = nsServer.getServsock().accept();
+                        Thread t = new Thread(new Runnable() {
+                            public void run() {
+                                nsMethod(s);
+                            }
+                        });
+                        t.start();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         });
         nsThread.start();
+        Log.i(TAG, "nsThread running " + nsThread.isAlive());
+        newThread.start();
+        Log.i(TAG, "newThread running " + newThread.isAlive());
     }
 
     @Override
@@ -83,6 +139,10 @@ public class MainActivity extends Activity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_settings) {
+            //open the file manager "explorer"
+            Intent oManager = new Intent(this, SettingsActivity.class);
+            //wait for the selected folders
+            startActivityForResult(oManager,REQUEST_PATH);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -117,14 +177,16 @@ public class MainActivity extends Activity {
 
     //method to send files
     //needs to be converted to whatever format Karen is making
-    public void serverMethod() {
+    public void serverMethod(Socket s) {
+        Log.i(TAG, "server method called");
         //the input file here is not used at all
         //since we're going to have a different way of doing this
-        wfServer.sendFiles(new File("/mnt/sdcard"));
+        wfServer.sendFiles(new File("/mnt/sdcard"), s);
     }
-    public void nsMethod() {
+    public void nsMethod(Socket s) {
+        Log.i(TAG, "ns method called");
         System.out.println("sending port");
-        nsServer.sendPort(mPort);
+        nsServer.sendPort(mPort, s);
     }
 
     public void findDeviceIP(Context context) {
@@ -157,12 +219,12 @@ public class MainActivity extends Activity {
 
     @Override
     protected void onResume() {
-        super.onResume();
-        if (wfHelper != null) {
+        if (wfHelper == null) {
             wfHelper.registerService(wfPort);
             wfHelper.discoverServices();
             System.out.println("wfPort: " + wfPort);
         }
+        super.onResume();
     }
 
     @Override

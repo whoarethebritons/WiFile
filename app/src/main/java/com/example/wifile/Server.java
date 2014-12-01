@@ -14,7 +14,9 @@ public class Server {
     //tag for the log
     public final String TAG = "server";
     ServerSocket servsock;
+    Socket mSock;
     Context mContext;
+
     Server () {}
     //constructer to initialize the serversocket
     public Server(Context c) {
@@ -26,23 +28,14 @@ public class Server {
             Log.e(TAG, "could not initialize server");
         }
     }
-    public Server(int inPort) {
-        System.out.println("service on port: " + inPort);
-        try {
-            servsock = new ServerSocket(inPort);
-        }catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     //to be retrieved and transfered over to the network service discovery
     public int getPort() {
         return servsock.getLocalPort();
     }
 
-    public void sendPort(int mPort) {
-
-        Socket sock = null;
+    public void sendPort(int mPort, Socket inSock) {
+        Socket sock = inSock;
         DataOutputStream dos = null;
         if (Thread.currentThread().isInterrupted()) {
             return;
@@ -50,9 +43,7 @@ public class Server {
         try {
             //file to transfer
             //this is an example file that exists on my phone
-            Log.d(TAG, "port: " + mPort);
-
-            sock = servsock.accept();
+            Log.i(TAG, "port: " + mPort);
 
             sock.setSendBufferSize(10);
 
@@ -60,6 +51,7 @@ public class Server {
             dos = new DataOutputStream(sock.getOutputStream());
 
             dos.writeInt(mPort);
+            dos.flush();
             //}
         } catch (IOException e) {
             e.printStackTrace();
@@ -69,7 +61,7 @@ public class Server {
             try {
                 dos.flush();
                 sock.close();
-                System.out.println("completed");
+                Log.i(TAG, "port transfer completed");
             } catch (IOException e) {
                 //Log.e(TAG, "could not complete file transfer");
             } catch(NullPointerException e) {
@@ -79,9 +71,9 @@ public class Server {
 
     }
 
-    public void sendFiles(File inFile) {
+    public void sendFiles(File inFile, Socket inSock) {
         //ServerSocket servsock = s;
-        Socket sock = null;
+        Socket sock = inSock;
         OutputStream os = null;
         File location = mContext.getFilesDir();
         BufferedInputStream bis = null;
@@ -100,9 +92,8 @@ public class Server {
 
 
             //accept socket connection
-
-            sock = servsock.accept();
-            //servsock.bind(sock.getLocalSocketAddress());
+            Log.i(TAG,"something is connecting");
+                    //servsock.bind(sock.getLocalSocketAddress());
 
             //this sets the size of the buffer to be the size of the file
             //this allows the WHOLE file to be transferred
@@ -113,6 +104,7 @@ public class Server {
 
             //debug to see size
             System.out.println(myFile.length());
+            Log.d(TAG, "length: " + myFile.length());
 
             //input stream for socket
             bis = new BufferedInputStream(new FileInputStream(myFile));
@@ -122,7 +114,7 @@ public class Server {
             os = sock.getOutputStream();
 
             os.write(mybytearray, 0, mybytearray.length);
-            //}
+            os.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -139,6 +131,11 @@ public class Server {
         }
 
     }
+
+    public ServerSocket getServsock() {
+        return servsock;
+    }
+
     public void close() {
         try {
             servsock.close();
