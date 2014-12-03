@@ -4,7 +4,8 @@ import android.content.Context;
 import android.net.nsd.NsdManager;
 import android.net.nsd.NsdServiceInfo;
 import android.util.Log;
-import android.widget.ArrayAdapter;
+
+import java.util.ArrayList;
 
 /**
  * Created by Kait on 9/29/2014.
@@ -18,7 +19,7 @@ public class NsdHelper extends Server {
     NsdServiceInfo wfService;
     Context wfContext;
     int wfPort, nsPort;
-    ArrayAdapter availableServices;
+    ArrayList availableServices;
 
     public static final String SERVICE_TYPE = "_ftp._tcp.";
     public static final String TAG = "NsdHelper";
@@ -28,7 +29,7 @@ public class NsdHelper extends Server {
         wfContext = context;
         //added to get nsdmanager so that service can be registered
         wfNsdManager = (NsdManager) context.getSystemService(Context.NSD_SERVICE);
-        availableServices = new ArrayAdapter(wfContext, R.layout.activity_filelist);
+        availableServices = new ArrayList();//Adapter(wfContext, R.layout.activity_filelist);
         System.out.println("helper created");
         initializeNsd();
     }
@@ -117,7 +118,10 @@ public class NsdHelper extends Server {
             @Override
             public void onServiceFound(NsdServiceInfo service) {
                 // A service was found!
+
                 availableServices.add(service);
+
+
                 Log.d(TAG, "Service discovery success" + service);
                 //added to see which port the server was on
                 Log.d(TAG, "my server on port: " + wfPort);
@@ -224,6 +228,9 @@ public class NsdHelper extends Server {
     public int getPort() {
         return nsPort;
     }
-    public ArrayAdapter getAvailableServices() { return availableServices; }
+    public ArrayList getAvailableServices() { return availableServices; }
+
+
+
 
 }// end class NsdHelper

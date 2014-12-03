@@ -12,10 +12,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.ArrayList;
 
 public class MainActivity extends Activity {
     private static final int REQUEST_PATH = 1;
@@ -30,7 +32,7 @@ public class MainActivity extends Activity {
     Server wfServer, nsServer;
     Thread newThread, nsThread;
 
-    ArrayAdapter availableServices;
+    ArrayList availableServices;
     private String wfIP;
     Context inContext;
     String TAG = "main";
@@ -38,6 +40,7 @@ public class MainActivity extends Activity {
     NotificationManager mNotificationManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        System.out.println("I should be doing something");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         nsdService();
@@ -129,9 +132,26 @@ public class MainActivity extends Activity {
         wfHelper.discoverServices();
         System.out.println("wfPort: " + wfPort);
 
-        //retrieve list of services
-        availableServices = wfHelper.getAvailableServices();
 
+        //retrieve list of services
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("I am doing a thing");
+                availableServices = wfHelper.getAvailableServices();
+                availableServices.add("test");
+                ArrayAdapter adapt = new ArrayAdapter(inContext, android.R.layout.simple_list_item_1, availableServices);
+                ListView listView = (ListView) findViewById(R.id.deviceList);
+                listView.setAdapter(adapt);
+//stuff that updates ui
+
+            }
+        });
+
+
+        //ArrayAdapter s = new ArrayAdapter(this,android.R.layout.simple_list_item_1, (java.util.List) availableServices);
+
+        //setListAdapter(availableServices);
         //without a new thread for the server transfers
         //there will be a NetworkOnMainThreadException
 

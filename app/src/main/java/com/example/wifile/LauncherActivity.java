@@ -1,13 +1,10 @@
 package com.example.wifile;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.EditText;
 
 
 public class LauncherActivity extends PreferenceActivity{
@@ -15,6 +12,9 @@ public class LauncherActivity extends PreferenceActivity{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Intent oManager = new Intent(this, MainActivity.class);
+        startActivityForResult(oManager,REQUEST_PATH);
+        /*
         //gets the settings where boolean is stored about first time opening
         SharedPreferences settings = getPreferences(Context.MODE_PRIVATE);
         //the boolean to determine if it's the first time
@@ -43,7 +43,7 @@ public class LauncherActivity extends PreferenceActivity{
             settings.edit().putBoolean("firstTime", false).commit();
             //Intent oManager = new Intent(this, MainActivity.class);
             startActivityForResult(oManager,REQUEST_PATH);
-        */}
+        *///}
         super.onCreate(savedInstanceState);
     }
 
