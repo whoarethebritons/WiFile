@@ -22,44 +22,14 @@
             android:orientation="vertical" android:layout_alignTop="@+id/scrollView1"
             android:layout_alignParentLeft="true" android:layout_alignParentStart="true">
 
-        <TextView
-                android:id="@+id/textView1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:text="Delete"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
-        <RadioGroup
-                android:id="@+id/Radio1"
+        <Button
+                android:id="@+id/skipButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-            <RadioButton
-                    android:id="@+id/radioButton1"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="17dp"
-                    android:text="Delete from computer" />
-
-            <RadioButton
-                    android:id="@+id/radioButton3"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Delete from phone" />
-
-            <RadioButton
-                    android:id="@+id/radioButton2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="No deletion" />
-
-            <RadioButton
-                    android:id="@+id/radioButton4"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Prompt everytime" />
-        </RadioGroup>
+                android:layout_marginTop="30dp"
+                android:text="Choose Folders"
+                android:onClick="getFile" >
+        </Button>
         <TextView
             android:id="@+id/textView3"
             android:layout_width="wrap_content"
@@ -74,32 +44,7 @@
                 android:text="@string/device_list"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
 
-    <GridLayout android:layout_width="wrap_content" android:layout_height="wrap_content">
-        <Button
-
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Service"
-                android:layout_marginTop="30dp"
-                android:id="@+id/servicebutton"
-                android:onClick="startService"/>
-        <Button
-                android:id="@+id/skipButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:text="Choose Folders"
-                android:onClick="getFile" >
-        </Button>
-        <Button
-                android:id="@+id/otherButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:text="Server"
-                android:onClick="startServer"
-                android:layout_gravity="center_horizontal">
-        </Button>
+    <GridLayout android:layout_width="match_parent" android:layout_height="wrap_content">
     </GridLayout>
     </LinearLayout>
 

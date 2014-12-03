@@ -201,8 +201,6 @@ public class FileManagerActivity extends ListActivity {
 
     //Shows the files within each folder
     public void onListItemClick(ListView l, View v, int position, long id) {
-
-        //List itemChecked = new ArrayList();
         //goes into folder
         //retrieves the file name at the position you poked
         String filename = (String) getListAdapter().getItem(position);

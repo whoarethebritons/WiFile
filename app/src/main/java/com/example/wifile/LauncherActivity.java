@@ -1,36 +1,51 @@
 package com.example.wifile;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
 
 
-public class LauncherActivity extends Activity {
+public class LauncherActivity extends PreferenceActivity{
     private static final int REQUEST_PATH = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
+        //gets the settings where boolean is stored about first time opening
         SharedPreferences settings = getPreferences(Context.MODE_PRIVATE);
+        //the boolean to determine if it's the first time
+        //if the value doesn't exist, it assumes that its true
         boolean first_time = settings.getBoolean("firstTime", true);
+
         System.out.println("launcher running");
         if(!first_time) {
             Intent oManager = new Intent(this, MainActivity.class);
             startActivityForResult(oManager,REQUEST_PATH);
         }else {
+            String serviceName = settings.getString("service_prefix", "Default");
+            setContentView(R.layout.activity_launcher);
+            EditText e = (EditText) findViewById(R.id.editText);
             /*
             Intent oManager = new Intent(this, SettingsActivity.class);
             startActivityForResult(oManager,REQUEST_PATH);
-            */
-            getPreferences(Context.MODE_PRIVATE).edit().putBoolean("firstTime", false).commit();
-        }
+*/
+
+            //settings.findPreferenceInHierarchy("service_prefix");
+            //addPreferencesFromResource(R.xml.pref_general);
+            /*
+            super.onCreate(savedInstanceState);
+            addPreferencesFromResource(R.layout.activity_launcher);
+
+            settings.edit().putBoolean("firstTime", false).commit();
+            //Intent oManager = new Intent(this, MainActivity.class);
+            startActivityForResult(oManager,REQUEST_PATH);
+        */}
         super.onCreate(savedInstanceState);
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
