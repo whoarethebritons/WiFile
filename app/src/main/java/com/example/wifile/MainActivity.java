@@ -11,7 +11,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import java.io.File;
@@ -106,7 +105,8 @@ public class MainActivity extends Activity {
         //eventually some code to pull up notification icon
 
         //initializing variables for nsd
-        wfHelper = new NsdHelper(inContext);
+        ListView listView = (ListView) findViewById(R.id.deviceList);
+        wfHelper = new NsdHelper(inContext, listView);
         Log.i(TAG, "helper created");
 
         wfServer = new Server(inContext);
@@ -131,9 +131,11 @@ public class MainActivity extends Activity {
         wfHelper.registerService(wfPort);
         wfHelper.discoverServices();
         System.out.println("wfPort: " + wfPort);
+        //wfHelper.makeList();
 
 
         //retrieve list of services
+        /*
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -146,7 +148,7 @@ public class MainActivity extends Activity {
 //stuff that updates ui
 
             }
-        });
+        });*/
 
 
         //ArrayAdapter s = new ArrayAdapter(this,android.R.layout.simple_list_item_1, (java.util.List) availableServices);
