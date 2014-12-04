@@ -56,6 +56,14 @@
                 android:value="MainActivity" />
         </activity>
         <activity
+                android:name=".NsdHelper"
+                android:label="NsdHelper"
+                android:parentActivityName=".MainActivity" >
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value="MainActivity" />
+        </activity>
+        <activity
             android:name=".LauncherActivity"
             android:label="WiFile" >
             <intent-filter>

@@ -1,16 +1,19 @@
 package com.example.wifile;
 
+import android.app.Activity;
 import android.content.Context;
 import android.net.nsd.NsdManager;
 import android.net.nsd.NsdServiceInfo;
 import android.util.Log;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import java.util.ArrayList;
 
 /**
  * Created by Kait on 9/29/2014.
  */
-public class NsdHelper extends Server {
+public class NsdHelper extends Activity {
 
     NsdManager wfNsdManager;
     NsdManager.RegistrationListener wfRegistrationListener;
@@ -25,7 +28,10 @@ public class NsdHelper extends Server {
     public static final String TAG = "NsdHelper";
 
     public String wfServiceName = "NsdWiFile";
-    public NsdHelper(Context context) {
+    ListView mListView;
+    public NsdHelper() {}
+    public NsdHelper(Context context, ListView lv) {
+        mListView = lv;
         wfContext = context;
         //added to get nsdmanager so that service can be registered
         wfNsdManager = (NsdManager) context.getSystemService(Context.NSD_SERVICE);
@@ -119,7 +125,6 @@ public class NsdHelper extends Server {
             public void onServiceFound(NsdServiceInfo service) {
                 // A service was found!
 
-                availableServices.add(service);
 
 
                 Log.d(TAG, "Service discovery success" + service);
@@ -133,9 +138,15 @@ public class NsdHelper extends Server {
                 } else if (service.getServiceName().equals(wfServiceName)) {
                     // The name of the service tells the user what they'd be
                     // connecting to.
+                    availableServices.remove(service);
+                    makeList();
                     Log.d(TAG, "Same machine: " + wfServiceName);
-                } else if (service.getServiceName().contains("NsdWiFile")) {
-                    wfNsdManager.resolveService(service, wfResolveListener);
+                } else if (service.getServiceName().contains("WiFile")) {
+                    try {
+                        wfNsdManager.resolveService(service, wfResolveListener);
+                    }catch(IllegalArgumentException e) {
+                        Log.e(TAG, "listener already in use");
+                    }
                 }
             }// end onServiceFound
 
@@ -144,6 +155,18 @@ public class NsdHelper extends Server {
                 // When the network service is no longer available.
                 // Internal bookkeeping code goes here.
                 Log.e(TAG, "service lost" + service);
+                for(Object o: availableServices) {
+                    NsdServiceInfo ns = (NsdServiceInfo)o;
+                    if(service.getServiceName().equals(ns.getServiceName())) {
+                        availableServices.remove(ns);
+                        Log.e(TAG, "removed " + service + " from list");
+                    }
+                }
+                //availableServices.remove(service);
+                for(Object o: availableServices) {
+                    System.out.println(((NsdServiceInfo)o));
+                }
+                makeList();
                 if (wfService == service) { wfService = null; }
             }
 
@@ -195,7 +218,17 @@ public class NsdHelper extends Server {
                 so we can make separate lists of android and computers
                  */
 
+                if(!availableServices.contains(serviceInfo)) {
+                    System.out.println("doesn't contain it");
+                    availableServices.add(serviceInfo);
 
+                }
+                else {
+                    System.out.println("contains it");
+                    availableServices.remove(serviceInfo);
+                    System.out.println("removed it");
+                }
+                makeList();
                 Log.e(TAG, "Resolve Succeeded." + serviceInfo);
 
                 if (serviceInfo.getServiceName().equals(wfServiceName)) {
@@ -229,7 +262,19 @@ public class NsdHelper extends Server {
         return nsPort;
     }
     public ArrayList getAvailableServices() { return availableServices; }
+    public void makeList() {
+        runOnUiThread(new Runnable () {
+              @Override
+              public void run() {
+                  ArrayAdapter adapt = new ArrayAdapter(wfContext, android.R.layout.simple_list_item_1, availableServices);
+                  //Activity main = getParent();
+                  //ListView listView = (ListView) getParent().findViewById(R.id.deviceList);
+                  mListView.setAdapter(adapt);
+              }
+          }
+        );
 
+    }
 
 
 
