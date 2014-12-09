@@ -13,7 +13,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -91,7 +90,7 @@ public class MainActivity extends Activity {
         Log.i(TAG, "server method called");
         //the input file here is not used at all
         //since we're going to have a different way of doing this
-        wfServer.sendFiles(new File("/mnt/sdcard"), s);
+        wfServer.sendFiles(s);
     }
 
     //method to send port number

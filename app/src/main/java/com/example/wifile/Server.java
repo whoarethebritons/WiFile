@@ -13,6 +13,7 @@ import java.net.Socket;
 public class Server {
     //tag for the log
     public final String TAG = "server";
+    String FILEHISTORY = "fileHistory";
     ServerSocket servsock;
     Context mContext;
     Server() {}
@@ -75,65 +76,102 @@ public class Server {
     }
 
     //needs socket as parameter so that it can have multiple connections
-    public void sendFiles(File inFile, Socket inSock) {
+    public void sendFiles(Socket inSock) {
         Socket sock = inSock;
         //to write to port
         OutputStream os = null;
         //to read from file
         BufferedInputStream bis = null;
+
+        FileInputStream fis;
+        try{
+            fis = mContext.openFileInput(FILEHISTORY);
+            InputStreamReader isr = new InputStreamReader ( fis ) ;
+            BufferedReader filebuff = new BufferedReader(isr);
+            String readString = filebuff.readLine ( ) ;
+            int i = 1;
+            while ( readString != null ) {
+                System.out.println(i + ". " + readString);
+                try {
+
+                    //file to transfer
+                    //this is an example file that exists on my phone
+                    //Log.d(TAG, location.getPath() + "/filehistory.txt");
+                    File myFile = new File(readString);
+
+                    //FileInputStream serverFileStream = mContext.openFileInput("filehistory.txt");
+
+                    //while statement will be changed to go through
+                    //a file returned from what Karen is working on
+
+                    Log.i(TAG,"something is connecting");
+
+                    //this sets the size of the buffer to be the size of the file
+                    //this allows the WHOLE file to be transferred
+                    sock.setSendBufferSize(myFile.getName().length() + (int) myFile.length());
+
+                    //array to hold individual bytes
+                    byte[] mybytearray = new byte[(int) myFile.length()];
+
+                    //debug to see size
+                    System.out.println(myFile.length());
+                    Log.d(TAG, "length: " + myFile.length());
+
+                    //input stream for socket
+                    bis = new BufferedInputStream(new FileInputStream(myFile));
+                    DataInputStream dis = new DataInputStream(bis);
+                    dis.readFully(mybytearray, 0, mybytearray.length);
+
+                    os = sock.getOutputStream();
+
+                    //Sending file name and file size to the server
+                    DataOutputStream dos = new DataOutputStream(os);
+                    dos.writeUTF(myFile.getName());
+                    dos.writeLong(mybytearray.length);
+                    dos.write(mybytearray, 0, mybytearray.length);
+                    dos.flush();
+                    /*bis.read(mybytearray, 0, mybytearray.length);
+
+                    //output stream for socket
+                    //os = sock.getOutputStream();
+                    os.write(myFile.getName().getBytes());
+                    os.write("|".getBytes());
+                    os.write(mybytearray, 0, mybytearray.length);
+                    os.flush();*/
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                finally{
+                    //flushes value
+                    try {
+                        os.close();
+                        bis.close();
+                        sock.close();
+                    } catch (IOException e) {
+                        Log.e(TAG, "could not complete file transfer");
+                    } catch(NullPointerException e) {
+                        e.printStackTrace();
+                    }
+                }
+                i++;
+                readString = filebuff.readLine ( ) ;
+
+            }
+            System.out.println("readString was null");
+
+            isr.close ( ) ;
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         File location = mContext.getFilesDir();
 
         if (Thread.currentThread().isInterrupted()) {
             return;
         }
-        try {
-            //file to transfer
-            //this is an example file that exists on my phone
-            Log.d(TAG, location.getPath() + "/filehistory.txt");
-            File myFile = new File("/mnt/sdcard/download/pearing.png");
 
-            //FileInputStream serverFileStream = mContext.openFileInput("filehistory.txt");
-
-            //while statement will be changed to go through
-            //a file returned from what Karen is working on
-
-            Log.i(TAG,"something is connecting");
-
-            //this sets the size of the buffer to be the size of the file
-            //this allows the WHOLE file to be transferred
-            sock.setSendBufferSize((int) myFile.length());
-
-            //array to hold individual bytes
-            byte[] mybytearray = new byte[(int) myFile.length()];
-
-            //debug to see size
-            System.out.println(myFile.length());
-            Log.d(TAG, "length: " + myFile.length());
-
-            //input stream for socket
-            bis = new BufferedInputStream(new FileInputStream(myFile));
-            bis.read(mybytearray, 0, mybytearray.length);
-
-            //output stream for socket
-            os = sock.getOutputStream();
-
-            os.write(mybytearray, 0, mybytearray.length);
-            os.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        finally{
-            //flushes value
-            try {
-                os.close();
-                bis.close();
-                sock.close();
-            } catch (IOException e) {
-                Log.e(TAG, "could not complete file transfer");
-            } catch(NullPointerException e) {
-                e.printStackTrace();
-            }
-        }
 
     }
 

@@ -14,9 +14,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -52,6 +50,7 @@ public class FileManagerActivity extends ListActivity {
             case R.id.action_done:
                 //writes file
                 writeFile();
+                //readFiles();
                 //closes activity
                 this.finish();
                 return true;
@@ -166,8 +165,10 @@ public class FileManagerActivity extends ListActivity {
                 Log.v(TAG,"array size: " + checkStates.size());
                 if(checkStates.valueAt(i)) {
                 //gets the string at that location, writes it to file
-                    String string = mPath + fileDirectory[checkStates.keyAt(i)]+ "\n";
-                    fos.write(string.getBytes());
+                    String string = mPath +"/" + fileDirectory[checkStates.keyAt(i)]+ "\n";
+
+                    fos.write(string.getBytes(),0,string.getBytes().length);
+
 
                     //all testing
                     Log.v(TAG,"i is: " + i);
@@ -185,7 +186,31 @@ public class FileManagerActivity extends ListActivity {
             }
         }
     }
+    /*
+    public void readFiles() {
+        FileInputStream fis;
+        try{
+            fis = openFileInput(FILEHISTORY);
+            InputStreamReader isr = new InputStreamReader ( fis ) ;
+            BufferedReader bis = new BufferedReader(isr);
+            String readString = bis.readLine ( ) ;
+            int i = 1;
+            while ( readString != null ) {
+                System.out.println(i + ". " + readString);
+                i++;
+                readString = bis.readLine ( ) ;
 
+            }
+
+            isr.close ( ) ;
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    */
 
     public void onCheckBox(View view) {
         //gets which row: position & filename
