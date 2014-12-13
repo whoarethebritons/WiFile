@@ -237,4 +237,18 @@ public class MainActivity extends Activity {
     /*
     end of addition for activity methods
      */
+
+    //get result of choose files
+    //which is stored in an arraylist
+    //this arraylist is then sent to the file writer
+    protected void onActivityResult (int requestCode, int resultCode, Intent data) {
+        ArrayList<String> str = new ArrayList<String>();
+        ArrayList<String> strings = data.getStringArrayListExtra("fu");
+        str.addAll(strings);
+        for(String s: str) {
+            System.out.println(s);
+        }
+        Writer fileWriter = new Writer(this, str);
+        fileWriter.writeFile();
+    }
 }

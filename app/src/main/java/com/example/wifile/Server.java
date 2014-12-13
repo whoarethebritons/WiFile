@@ -6,6 +6,7 @@ import android.util.Log;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 
 /**
  * Created by Eden on 9/30/2014.
@@ -82,81 +83,57 @@ public class Server {
         OutputStream os = null;
         //to read from file
         BufferedInputStream bis = null;
-
         FileInputStream fis;
         try{
+            Log.v(TAG, "trying");
+            ArrayList<String> filesToSend = new ArrayList<String>();
             fis = mContext.openFileInput(FILEHISTORY);
             InputStreamReader isr = new InputStreamReader ( fis ) ;
             BufferedReader filebuff = new BufferedReader(isr);
             String readString = filebuff.readLine ( ) ;
+
+            int numOfFiles = 0;
+
+            //Sending file name and file size to the server
+            DataOutputStream sockOutput = new DataOutputStream(sock.getOutputStream());
+            DataInputStream sockInput = new DataInputStream(sock.getInputStream());
             int i = 1;
-            while ( readString != null ) {
-                System.out.println(i + ". " + readString);
-                try {
+            while(readString != null) {
+                filesToSend.add(readString);
+                numOfFiles++;
+                readString = filebuff.readLine();
+            }
+            Log.v(TAG,"number of files " + numOfFiles);
+            sockOutput.writeInt(numOfFiles);
+            sockOutput.flush();
+            int filesReceived = sockInput.readInt();
+            boolean same = false;
 
-                    //file to transfer
-                    //this is an example file that exists on my phone
-                    //Log.d(TAG, location.getPath() + "/filehistory.txt");
-                    File myFile = new File(readString);
-
-                    //FileInputStream serverFileStream = mContext.openFileInput("filehistory.txt");
-
-                    //while statement will be changed to go through
-                    //a file returned from what Karen is working on
-
-                    Log.i(TAG,"something is connecting");
-
-                    //this sets the size of the buffer to be the size of the file
-                    //this allows the WHOLE file to be transferred
-                    sock.setSendBufferSize(myFile.getName().length() + (int) myFile.length());
-
-                    //array to hold individual bytes
-                    byte[] mybytearray = new byte[(int) myFile.length()];
-
-                    //debug to see size
-                    System.out.println(myFile.length());
-                    Log.d(TAG, "length: " + myFile.length());
-
-                    //input stream for socket
-                    bis = new BufferedInputStream(new FileInputStream(myFile));
-                    DataInputStream dis = new DataInputStream(bis);
-                    dis.readFully(mybytearray, 0, mybytearray.length);
-
-                    os = sock.getOutputStream();
-
-                    //Sending file name and file size to the server
-                    DataOutputStream dos = new DataOutputStream(os);
-                    dos.writeUTF(myFile.getName());
-                    dos.writeLong(mybytearray.length);
-                    dos.write(mybytearray, 0, mybytearray.length);
-                    dos.flush();
-                    /*bis.read(mybytearray, 0, mybytearray.length);
-
-                    //output stream for socket
-                    //os = sock.getOutputStream();
-                    os.write(myFile.getName().getBytes());
-                    os.write("|".getBytes());
-                    os.write(mybytearray, 0, mybytearray.length);
-                    os.flush();*/
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                finally{
-                    //flushes value
+            while(filesReceived < numOfFiles) {
+                System.out.println(i + ". " + filesToSend.get(filesReceived));
+                if(!same) {
                     try {
-                        os.close();
-                        bis.close();
-                        sock.close();
+                        File myFile = new File(filesToSend.get(filesReceived));
+                        sendSingleFile(myFile, sockOutput);
+                        int temp = filesReceived;
+                        filesReceived = sockInput.readInt();
+                        System.out.println(filesReceived);
+                        if (temp == filesReceived) {
+                            same = true;
+                        }
+                        Log.i(TAG, "something is connecting");
+
                     } catch (IOException e) {
-                        Log.e(TAG, "could not complete file transfer");
-                    } catch(NullPointerException e) {
                         e.printStackTrace();
+                        filesReceived = sockInput.readInt();
                     }
                 }
-                i++;
-                readString = filebuff.readLine ( ) ;
+                else {
+                    System.out.println("file already sent");
+                }
 
             }
+            sockOutput.close();
             System.out.println("readString was null");
 
             isr.close ( ) ;
@@ -165,6 +142,12 @@ public class Server {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        }finally {
+            try {
+                sock.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         File location = mContext.getFilesDir();
 
@@ -173,6 +156,28 @@ public class Server {
         }
 
 
+    }
+
+    public void sendSingleFile(File file, DataOutputStream dos) throws IOException {
+        if (dos != null && file.exists() && file.isFile()) {
+            FileInputStream input = new FileInputStream(file);
+            byte[] mybytearray = new byte[(int) file.length()];
+            dos.writeLong(file.length());
+            dos.writeUTF(file.getName());
+            System.out.println(file.getAbsolutePath());
+            //int read = 0;
+            BufferedInputStream dbis = new BufferedInputStream(input);
+            DataInputStream dis = new DataInputStream(dbis);
+            dis.readFully(mybytearray, 0, mybytearray.length);
+            dis.close();
+            dos.write(mybytearray, 0, mybytearray.length);
+
+            /*while ((read = input.read()) != -1)
+                dos.writeByte(read);*/
+            dos.flush();
+            input.close();
+            System.out.println("File successfully sent!");
+        }
     }
 
     public ServerSocket getServsock() {

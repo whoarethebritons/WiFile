@@ -32,6 +32,7 @@ public class FileManagerActivity extends ListActivity {
     private CheckAdapter checkAdapter;
     private SparseBooleanArray checkStates;
     private String mPath;
+    private ArrayList<String> fu;
     String TAG = "fileman";
     //Create the history file, where we will store the file names, which will be added
     // to the computer. The file will be stored on the the phone's sd card
@@ -43,6 +44,11 @@ public class FileManagerActivity extends ListActivity {
         inflater.inflate(R.menu.file_manager, menu);
         return true;
     }
+    @Override
+    public void onBackPressed() {
+        writeFile();
+        this.finish();
+    }
 
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
@@ -51,6 +57,7 @@ public class FileManagerActivity extends ListActivity {
                 //writes file
                 writeFile();
                 //readFiles();
+                setResult(RESULT_OK, getIntent());
                 //closes activity
                 this.finish();
                 return true;
@@ -65,10 +72,15 @@ public class FileManagerActivity extends ListActivity {
         //set mPath to be sdcard
         //Environment.getExternalStorageDirectory();
         //gets all files in the SD card
+        //fu = new ArrayList<String>();
         mPath = Environment.getExternalStorageDirectory().getPath();
 
         if (getIntent().hasExtra("mPath")) {
             mPath = getIntent().getStringExtra("mPath");
+            //fu.addAll(getIntent().getStringArrayListExtra("fu"));
+        }
+        if(fu == null) {
+            fu = new ArrayList<String>();
         }
 
         //sets activity title to the path name
@@ -151,8 +163,8 @@ public class FileManagerActivity extends ListActivity {
     {
         //file output
         FileOutputStream fos = null;
-        try {
-            fos = openFileOutput(FILEHISTORY, Context.MODE_PRIVATE);
+        //try {
+            //fos = openFileOutput(FILEHISTORY, Context.MODE_PRIVATE);
 
 
             //Collect all the files
@@ -166,8 +178,9 @@ public class FileManagerActivity extends ListActivity {
                 if(checkStates.valueAt(i)) {
                 //gets the string at that location, writes it to file
                     String string = mPath +"/" + fileDirectory[checkStates.keyAt(i)]+ "\n";
-
-                    fos.write(string.getBytes(),0,string.getBytes().length);
+                    fu.add(string);
+                    getIntent().putStringArrayListExtra("fu", fu);
+                    //fos.write(string.getBytes(),0,string.getBytes().length);
 
 
                     //all testing
@@ -176,6 +189,7 @@ public class FileManagerActivity extends ListActivity {
                     Log.v(TAG,fileDirectory[checkStates.keyAt(i)]);
                 }
             }
+            /*
         }catch(IOException e) {
             Log.e("fileman","IOEXCEPTION");
         }finally{
@@ -184,7 +198,7 @@ public class FileManagerActivity extends ListActivity {
             }catch(IOException e) {
                 Log.e("fileman","IOEXCEPTION");
             }
-        }
+        }*/
     }
     /*
     public void readFiles() {
@@ -248,7 +262,7 @@ public class FileManagerActivity extends ListActivity {
             //assigns the path to the new activity
             openDir.putExtra("mPath", filename);
             //starts activity
-            startActivity(openDir);
+            startActivityForResult(openDir, 1);
         }
         else {
 
@@ -260,4 +274,17 @@ public class FileManagerActivity extends ListActivity {
         return getIntent();
     }
 
+
+    protected void onActivityResult (int requestCode, int resultCode, Intent data) {
+        ArrayList<String> strings = data.getStringArrayListExtra("fu");
+        if(strings != null) {
+            fu.addAll(strings);
+            setResult(RESULT_OK, getIntent());
+            for (String s : fu) {
+                Log.v(TAG, "here:" + s);
+            }
+        }
+        getIntent().putStringArrayListExtra("fu", fu);
+        setResult(RESULT_OK, getIntent());
+    }
 }

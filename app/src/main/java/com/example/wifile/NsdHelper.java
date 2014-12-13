@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * Created by Kait on 9/29/2014.
@@ -27,7 +28,7 @@ public class NsdHelper extends Activity {
     public static final String SERVICE_TYPE = "_ftp._tcp.";
     public static final String TAG = "NsdHelper";
 
-    public String wfServiceName = "NsdWiFile";
+    public String wfServiceName = "EdenNsdWiFile";
     ListView mListView;
     public NsdHelper() {}
     public NsdHelper(Context context, ListView lv) {
@@ -63,6 +64,7 @@ public class NsdHelper extends Activity {
 
         wfNsdManager.registerService(
                 serviceInfo, NsdManager.PROTOCOL_DNS_SD, wfRegistrationListener);
+
     }// end registerService
 
     public void discoverServices() {
@@ -84,7 +86,6 @@ public class NsdHelper extends Activity {
                 // with the name Android actually used.
                 wfServiceName = NsdServiceInfo.getServiceName();
                 System.out.println(wfServiceName);
-
 
             }
 
@@ -155,18 +156,29 @@ public class NsdHelper extends Activity {
                 // When the network service is no longer available.
                 // Internal bookkeeping code goes here.
                 Log.e(TAG, "service lost" + service);
-                for(Object o: availableServices) {
-                    NsdServiceInfo ns = (NsdServiceInfo)o;
-                    if(service.getServiceName().equals(ns.getServiceName())) {
-                        availableServices.remove(ns);
-                        Log.e(TAG, "removed " + service + " from list");
+                if(availableServices.size() > 0) {
+                    Iterator it = availableServices.iterator();
+                    while (it.hasNext()) {
+                        //Object o=it.next()
+                        //if(o.equals(what i'm looking for)){
+                        //iter.remove();
+
+                        NsdServiceInfo ns = (NsdServiceInfo) it.next();
+                        System.out.println(ns);
+                        if (service.getServiceName().equals(ns.getServiceName())) {
+                            it.remove();
+                            //availableServices.remove(ns);
+                            //i--;
+                            Log.e(TAG, "removed " + service + " from list");
+                        }
                     }
+                    //availableServices.remove(service);
+                /*
+                for(int i = 0; i<= availableServices.size(); i++) {
+                    System.out.println(((NsdServiceInfo)availableServices.get(i)));
+                }*/
+                    makeList();
                 }
-                //availableServices.remove(service);
-                for(Object o: availableServices) {
-                    System.out.println(((NsdServiceInfo)o));
-                }
-                makeList();
                 if (wfService == service) { wfService = null; }
             }
 
@@ -208,8 +220,6 @@ public class NsdHelper extends Activity {
                 /*
                 in here we need to list the devices that have the
                 NSDWiFile service running
-
-
                 what we could do later on is change
                 service.getServiceName().contains("NsdWiFile")
                 to
@@ -264,8 +274,11 @@ public class NsdHelper extends Activity {
     public ArrayList getAvailableServices() { return availableServices; }
     public void makeList() {
         runOnUiThread(new Runnable () {
-              @Override
-              public void run() {
+                          @Override
+                          public void run() {
+                  if(availableServices.size() == 0) {
+                      availableServices.add(new NsdServiceInfo());
+                  }
                   ArrayAdapter adapt = new ArrayAdapter(wfContext, android.R.layout.simple_list_item_1, availableServices);
                   //Activity main = getParent();
                   //ListView listView = (ListView) getParent().findViewById(R.id.deviceList);
