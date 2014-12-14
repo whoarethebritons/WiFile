@@ -20,7 +20,7 @@ public class NsdHelper extends Activity {
     NsdManager.RegistrationListener wfRegistrationListener;
     NsdManager.DiscoveryListener wfDiscoveryListener;
     NsdManager.ResolveListener wfResolveListener;
-    NsdServiceInfo wfService;
+    NsdServiceInfo wfService, nullService;
     Context wfContext;
     int wfPort, nsPort;
     ArrayList availableServices;
@@ -28,12 +28,16 @@ public class NsdHelper extends Activity {
     public static final String SERVICE_TYPE = "_ftp._tcp.";
     public static final String TAG = "NsdHelper";
 
-    public String wfServiceName = "EdenNsdWiFile";
+    public String wfServiceName;// = "EdenNsdWiFile";
     ListView mListView;
     public NsdHelper() {}
     public NsdHelper(Context context, ListView lv) {
+        nullService = new NsdServiceInfo();
         mListView = lv;
         wfContext = context;
+        //wfServiceName = broadcastName;
+
+        //bindPreferenceSummaryToValue(findPreference("service_prefix"));
         //added to get nsdmanager so that service can be registered
         wfNsdManager = (NsdManager) context.getSystemService(Context.NSD_SERVICE);
         availableServices = new ArrayList();//Adapter(wfContext, R.layout.activity_filelist);
@@ -51,11 +55,12 @@ public class NsdHelper extends Activity {
      * Registers application's service on local network
      * @param port
      */
-    public void registerService(int port) {
+    public void registerService(int port, String serviceName) {
+        wfServiceName = serviceName;
         nsPort = port;
         NsdServiceInfo serviceInfo = new NsdServiceInfo();
 //System.out.println(serviceInfo.getHost().getHostName() );
-        serviceInfo.setServiceName(wfServiceName);
+        serviceInfo.setServiceName(serviceName);
         serviceInfo.setServiceType(SERVICE_TYPE);
         serviceInfo.setPort(nsPort);
         System.out.println(nsPort);
@@ -231,7 +236,12 @@ public class NsdHelper extends Activity {
                 if(!availableServices.contains(serviceInfo)) {
                     System.out.println("doesn't contain it");
                     availableServices.add(serviceInfo);
-
+                    int n;
+                    if(availableServices.size() >0) {
+                        if((n = availableServices.indexOf(nullService)) != -1){
+                            availableServices.remove(n);
+                        }
+                    }
                 }
                 else {
                     System.out.println("contains it");
@@ -272,17 +282,31 @@ public class NsdHelper extends Activity {
         return nsPort;
     }
     public ArrayList getAvailableServices() { return availableServices; }
+
+    public void setWfServiceName(String s) {
+        /*
+        wfNsdManager.unregisterService(wfRegistrationListener);
+        wfNsdManager.stopServiceDiscovery(wfDiscoveryListener);
+        registerService(nsPort, s);*/
+        //
+    }
+
+    //makes list for the ui to display the available services
     public void makeList() {
+        //forces the arrayadapter to be created on the ui thread
+        //otherwise causes exception
         runOnUiThread(new Runnable () {
                           @Override
                           public void run() {
-                  if(availableServices.size() == 0) {
-                      availableServices.add(new NsdServiceInfo());
-                  }
-                  ArrayAdapter adapt = new ArrayAdapter(wfContext, android.R.layout.simple_list_item_1, availableServices);
-                  //Activity main = getParent();
-                  //ListView listView = (ListView) getParent().findViewById(R.id.deviceList);
-                  mListView.setAdapter(adapt);
+              //if this is not added when nothing in list,
+              //the service removed method throws index out of bounds
+              if(availableServices.size() == 0) {
+                  availableServices.add(nullService);
+              }
+              ArrayAdapter adapt = new ArrayAdapter(wfContext,
+                      android.R.layout.simple_list_item_1, availableServices);
+
+              mListView.setAdapter(adapt);
               }
           }
         );

@@ -9,6 +9,8 @@ import java.util.ArrayList;
 
 /**
  * Created by Eden on 12/8/2014.
+ * Writes file names to a private file only
+ * accessible by this application
  */
 public class Writer {
     Context mContext;
@@ -23,9 +25,9 @@ public class Writer {
     public void writeFile()
     {
         //file output
-        FileOutputStream fos = null;
+        FileOutputStream fileOutput = null;
         try {
-            fos = mContext.openFileOutput(FILEHISTORY, Context.MODE_PRIVATE);
+            fileOutput = mContext.openFileOutput(FILEHISTORY, Context.MODE_PRIVATE);
 
 
         //Collect all the files
@@ -34,13 +36,13 @@ public class Writer {
         //checks size of array
             for(String string: mArrayList) {
                 Log.v(TAG, "file to write: " + string) ;
-                fos.write(string.getBytes(),0,string.getBytes().length);
+                fileOutput.write(string.getBytes(),0,string.getBytes().length);
             }
         }catch(IOException e) {
             Log.e("fileman","IOEXCEPTION");
         }finally{
             try {
-                fos.close();
+                fileOutput.close();
             }catch(IOException e) {
                 Log.e("fileman","IOEXCEPTION");
             }

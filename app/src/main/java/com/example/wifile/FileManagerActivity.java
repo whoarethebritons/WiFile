@@ -14,7 +14,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import java.io.*;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -24,7 +24,7 @@ import java.util.List;
 
 /**
  * FileManagerActivity is responsible for retrieving the selected files from the checkboxes
- * and storing those selected files within a TEXT FILE. MAKE A FOLDER PUT A FILE IN THERE!!!!!!!
+ * and storing those selected files within a file.
  * Created by Eden on 9/22/2014.
  */
 public class FileManagerActivity extends ListActivity {
@@ -32,8 +32,9 @@ public class FileManagerActivity extends ListActivity {
     private CheckAdapter checkAdapter;
     private SparseBooleanArray checkStates;
     private String mPath;
-    private ArrayList<String> fu;
+    private ArrayList<String> mFileNames;
     String TAG = "fileman";
+
     //Create the history file, where we will store the file names, which will be added
     // to the computer. The file will be stored on the the phone's sd card
     String FILEHISTORY = "fileHistory";
@@ -46,7 +47,11 @@ public class FileManagerActivity extends ListActivity {
     }
     @Override
     public void onBackPressed() {
+        //writes file
         writeFile();
+        //readFiles();
+        setResult(RESULT_OK, getIntent());
+        //closes activity
         this.finish();
     }
 
@@ -72,15 +77,17 @@ public class FileManagerActivity extends ListActivity {
         //set mPath to be sdcard
         //Environment.getExternalStorageDirectory();
         //gets all files in the SD card
-        //fu = new ArrayList<String>();
+        //mFileNames = new ArrayList<String>();
         mPath = Environment.getExternalStorageDirectory().getPath();
 
+        //gets the folder
         if (getIntent().hasExtra("mPath")) {
             mPath = getIntent().getStringExtra("mPath");
-            //fu.addAll(getIntent().getStringArrayListExtra("fu"));
         }
-        if(fu == null) {
-            fu = new ArrayList<String>();
+
+        //if the ArrayList does not exist, create it
+        if(mFileNames == null) {
+            mFileNames = new ArrayList<String>();
         }
 
         //sets activity title to the path name
@@ -119,8 +126,6 @@ public class FileManagerActivity extends ListActivity {
         fileDirectory = Arrays.copyOf(storeDirs, storeDirs.length,String[].class);//Convert to type String
 
         /*-----------------------------------------------------------------------------------------------------------*/
-        //ArrayAdapter adapter = new ArrayAdapter(this,android.R.layout.simple_list_item_checked, android.R.id.text1, dirs);
-       // setListAdapter((new ArrayAdapter(this, R.layout.activity_filelist, R.id.nameView, dirs)));
 
         //Create checkListAdaptor. Similar to an ArrayAdapter, with SparseBooleanArray added to it
         checkAdapter = new CheckAdapter(this, R.layout.activity_filelist, R.id.nameView,
@@ -138,6 +143,8 @@ public class FileManagerActivity extends ListActivity {
         int resource;
         int textViewResourceID;
 
+        //takes in context in order to create a SparseBooleanArray that
+        //stores the string and value of true or false for the list of files
         public CheckAdapter(Context context, int resource, int textViewResourceID, String[] list) {
             super(context, resource, textViewResourceID, list);
             checkStates = new SparseBooleanArray(list.length);
@@ -159,80 +166,32 @@ public class FileManagerActivity extends ListActivity {
         }
     }
     //DONE button listener will retrieve all checked files
-    public void writeFile()
-    {
-        //file output
-        FileOutputStream fos = null;
-        //try {
-            //fos = openFileOutput(FILEHISTORY, Context.MODE_PRIVATE);
+    //the back button will also do this
 
+    public void writeFile() {
+        //Collect all the files
+        //send all filenames to writeToFile(String [] fileList)
 
-            //Collect all the files
-            //send all filenames to writeToFile(String [] fileList)
-
-            //checks size of array
-            for(int i = 0; i < checkStates.size(); i++) {
-                //
-                //testing
-                Log.v(TAG,"array size: " + checkStates.size());
-                if(checkStates.valueAt(i)) {
-                //gets the string at that location, writes it to file
-                    String string = mPath +"/" + fileDirectory[checkStates.keyAt(i)]+ "\n";
-                    fu.add(string);
-                    getIntent().putStringArrayListExtra("fu", fu);
-                    //fos.write(string.getBytes(),0,string.getBytes().length);
-
-
-                    //all testing
-                    Log.v(TAG,"i is: " + i);
-                    Log.v(TAG,"The key is: " + checkStates.keyAt(i));
-                    Log.v(TAG,fileDirectory[checkStates.keyAt(i)]);
-                }
+        //checks size of array
+        for(int i = 0; i < checkStates.size(); i++) {
+            //checks if the the sparse boolean array has value of true
+            //meaning it was checked and the file string
+            if(checkStates.valueAt(i)) {
+                //gets the string at that location, adds it to the arraylist
+                //all activities have this arraylist
+                String string = mPath +"/" + fileDirectory[checkStates.keyAt(i)]+ "\n";
+                mFileNames.add(string);
+                //this allows the child to get the ArrayList
+                getIntent().putStringArrayListExtra("mFileNames", mFileNames);
             }
-            /*
-        }catch(IOException e) {
-            Log.e("fileman","IOEXCEPTION");
-        }finally{
-            try {
-                fos.close();
-            }catch(IOException e) {
-                Log.e("fileman","IOEXCEPTION");
-            }
-        }*/
-    }
-    /*
-    public void readFiles() {
-        FileInputStream fis;
-        try{
-            fis = openFileInput(FILEHISTORY);
-            InputStreamReader isr = new InputStreamReader ( fis ) ;
-            BufferedReader bis = new BufferedReader(isr);
-            String readString = bis.readLine ( ) ;
-            int i = 1;
-            while ( readString != null ) {
-                System.out.println(i + ". " + readString);
-                i++;
-                readString = bis.readLine ( ) ;
-
-            }
-
-            isr.close ( ) ;
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
-    */
 
     public void onCheckBox(View view) {
         //gets which row: position & filename
         final int position = getListView().getPositionForView((View) view.getParent());
         String filename = (String) getListAdapter().getItem(position);
 
-        //testing purposes
-        Log.v(TAG,"toggled! " + filename);
         //toggles the thing
         checkAdapter.toggle(position);
     }
@@ -264,27 +223,32 @@ public class FileManagerActivity extends ListActivity {
             //starts activity
             startActivityForResult(openDir, 1);
         }
-        else {
-
-        }
-        // itemChecked.add(filename);
     }
 
     public Intent getSupportParentActivityIntent () {
         return getIntent();
     }
 
-
+    //when one of the FileManagerActivities returns, it adds to the ArrayList
     protected void onActivityResult (int requestCode, int resultCode, Intent data) {
-        ArrayList<String> strings = data.getStringArrayListExtra("fu");
-        if(strings != null) {
-            fu.addAll(strings);
+        //this gets the ArrayList from the child
+        ArrayList<String> strings = data.getStringArrayListExtra("mFileNames");
+        //if there was anything in there
+        //if(strings != null) {
+            //add all the child activity's selections to the current directory's
+            mFileNames.addAll(strings);
+            //and returns result
             setResult(RESULT_OK, getIntent());
-            for (String s : fu) {
-                Log.v(TAG, "here:" + s);
+
+            // testing purposes
+            for (String s : mFileNames) {
+                Log.v(TAG, data + "here:" + s);
             }
-        }
-        getIntent().putStringArrayListExtra("fu", fu);
+            //*/
+        //}
+
+        //puts the extra ArrayList
+        getIntent().putStringArrayListExtra("mFileNames", mFileNames);
         setResult(RESULT_OK, getIntent());
     }
 }

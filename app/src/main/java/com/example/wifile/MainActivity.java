@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.nsd.NsdManager;
 import android.net.nsd.NsdServiceInfo;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,7 +20,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 public class MainActivity extends Activity {
-    private static final int REQUEST_PATH = 1;
+    //private static final int REQUEST_PATH = 1;
     //nsd variables
     NsdManager wfNsdManager;
     NsdServiceInfo wfService;
@@ -29,11 +31,15 @@ public class MainActivity extends Activity {
     int mPort, wfPort;
     Server wfServer, nsServer;
     Thread newThread, nsThread;
-
+    static Notification mNotify;
     ArrayList availableServices;
     private String wfIP;
     Context inContext;
     String TAG = "main";
+    String serviceName;
+
+    int requestFileMan = 1;
+    int requestSettings = 2;
 
     NotificationManager mNotificationManager;
     @Override
@@ -41,6 +47,10 @@ public class MainActivity extends Activity {
         System.out.println("I should be doing something");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mNotify = new Notification(this);
+        mNotify.notify(2, "test");
+        //startActivity(NotificationActivity, )
+
         nsdService();
     }
 
@@ -61,7 +71,7 @@ public class MainActivity extends Activity {
             //open the file manager "explorer"
             Intent oManager = new Intent(this, SettingsActivity.class);
             //wait for the selected folders
-            startActivityForResult(oManager,REQUEST_PATH);
+            startActivityForResult(oManager, requestSettings);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -72,15 +82,9 @@ public class MainActivity extends Activity {
         //open the file manager "explorer"
         Intent openManager = new Intent(this, FileManagerActivity.class);
         //wait for the selected folders
-        startActivityForResult(openManager,REQUEST_PATH);
+        startActivityForResult(openManager,requestFileMan);
     }
-    public void startServer(View view){
 
-            //open the file manager "explorer"
-            Intent oManager = new Intent(this, ServerActivity.class);
-            //wait for the selected folders
-            startActivityForResult(oManager,REQUEST_PATH);
-        }
 
     /*background methods for service to run*/
 
@@ -102,6 +106,24 @@ public class MainActivity extends Activity {
     public void nsdService() {
         inContext = this;
         //eventually some code to pull up notification icon
+        SharedPreferences mPref = PreferenceManager.getDefaultSharedPreferences(this);
+        serviceName = mPref
+                .getString("service_prefix", getResources()
+                        .getString(R.string.pref_default_display_name)) + "WiFile";
+        /*
+        SharedPreferences.OnSharedPreferenceChangeListener listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+
+            public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
+                //testing to see if the preference for broadcast name was changed
+                if(key.equals("service_prefix")) {
+                    wfHelper.setWfServiceName(prefs
+                            .getString(key, getResources()
+                                    .getString(R.string.pref_default_display_name)) + "WiFile");
+                }
+            }
+        };
+        mPref.registerOnSharedPreferenceChangeListener(listener);*/
+        System.out.println(serviceName);
 
         //initializing variables for nsd
         ListView listView = (ListView) findViewById(R.id.deviceList);
@@ -127,32 +149,10 @@ public class MainActivity extends Activity {
 
 
         //start discovery
-        wfHelper.registerService(wfPort);
+        wfHelper.registerService(wfPort, serviceName);
         wfHelper.discoverServices();
         System.out.println("wfPort: " + wfPort);
-        //wfHelper.makeList();
 
-
-        //retrieve list of services
-        /*
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                System.out.println("I am doing a thing");
-                availableServices = wfHelper.getAvailableServices();
-                availableServices.add("test");
-                ArrayAdapter adapt = new ArrayAdapter(inContext, android.R.layout.simple_list_item_1, availableServices);
-                ListView listView = (ListView) findViewById(R.id.deviceList);
-                listView.setAdapter(adapt);
-//stuff that updates ui
-
-            }
-        });*/
-
-
-        //ArrayAdapter s = new ArrayAdapter(this,android.R.layout.simple_list_item_1, (java.util.List) availableServices);
-
-        //setListAdapter(availableServices);
         //without a new thread for the server transfers
         //there will be a NetworkOnMainThreadException
 
@@ -160,39 +160,39 @@ public class MainActivity extends Activity {
         newThread = new Thread(new Runnable() {
 
             public void run() {
-                try {
-                    while (true) {
-                        final Socket s = wfServer.getServsock().accept();
-                        Thread t = new Thread(new Runnable() {
-                            public void run() {
-                                serverMethod(s);
-                            }
-                        });
-                        t.start();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
+            try {
+                while (true) {
+                    final Socket s = wfServer.getServsock().accept();
+                    //dialogCreator("this one");
+                    Thread t = new Thread(new Runnable() {
+                        public void run() {
+                            serverMethod(s);
+                        }
+                    });
+                    t.start();
                 }
-
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             }
         });
 
 
         nsThread = new Thread(new Runnable() {
             public void run() {
-                try {
-                    while (true) {
-                        final Socket s = nsServer.getServsock().accept();
-                        Thread t = new Thread(new Runnable() {
-                            public void run() {
-                                nsMethod(s);
-                            }
-                        });
-                        t.start();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
+            try {
+                while (true) {
+                    final Socket s = nsServer.getServsock().accept();
+                    Thread t = new Thread(new Runnable() {
+                        public void run() {
+                            nsMethod(s);
+                        }
+                    });
+                    t.start();
                 }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             }
         });
         nsThread.start();
@@ -220,7 +220,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onResume() {
         if (wfHelper == null) {
-            wfHelper.registerService(wfPort);
+            wfHelper.registerService(wfPort, serviceName);
             wfHelper.discoverServices();
             System.out.println("wfPort: " + wfPort);
         }
@@ -242,13 +242,50 @@ public class MainActivity extends Activity {
     //which is stored in an arraylist
     //this arraylist is then sent to the file writer
     protected void onActivityResult (int requestCode, int resultCode, Intent data) {
-        ArrayList<String> str = new ArrayList<String>();
-        ArrayList<String> strings = data.getStringArrayListExtra("fu");
-        str.addAll(strings);
-        for(String s: str) {
-            System.out.println(s);
+        if(requestCode == requestFileMan) {
+            ArrayList<String> str = new ArrayList<String>();
+            ArrayList<String> strings = data.getStringArrayListExtra("mFileNames");
+            str.addAll(strings);
+            for (String s : str) {
+                System.out.println(s);
+            }
+            Writer fileWriter = new Writer(this, str);
+            fileWriter.writeFile();
         }
-        Writer fileWriter = new Writer(this, str);
-        fileWriter.writeFile();
     }
+/*
+    //creates an okay/cancel dialog
+    public void dialogCreator(String s) {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                this);
+
+        // set title
+        alertDialogBuilder.setTitle("Would you like to connect to: ");
+
+        // set dialog message
+        alertDialogBuilder
+                .setMessage(s)
+                .setCancelable(false)
+                .setPositiveButton("Yes",new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog,int id) {
+                        // if this button is clicked, close
+                        // current activity
+                        //finish();
+                        dialog.dismiss();
+                    }
+                })
+                .setNegativeButton("No",new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog,int id) {
+                        // if this button is clicked, just close
+                        // the dialog box and do nothing
+                        dialog.cancel();
+                    }
+                });
+
+        // create alert dialog
+        AlertDialog alertDialog = alertDialogBuilder.create();
+
+        // show it
+        alertDialog.show();
+    }*/
 }

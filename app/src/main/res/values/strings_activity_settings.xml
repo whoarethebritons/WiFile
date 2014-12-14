@@ -6,11 +6,8 @@
     <!-- Example General settings -->
     <string name="pref_header_general">General</string>
 
-    <string name="pref_title_social_recommendations">Probably need this later</string>
-    <string name="pref_description_social_recommendations">Not sure yet</string>
-
     <string name="pref_title_display_name">Display name</string>
-    <string name="pref_default_display_name">Default</string>
+    <string name="pref_default_display_name">Nsd</string>
 
     <string name="pref_title_delete_priority">Add friends to messages</string>
     <string-array name="pref_example_list_titles">
