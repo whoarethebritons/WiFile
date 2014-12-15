@@ -1,19 +1,23 @@
 package com.example.wifile;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.NotificationManager;
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
+import android.content.*;
+import android.database.Cursor;
+import android.net.Uri;
 import android.net.nsd.NsdManager;
 import android.net.nsd.NsdServiceInfo;
 import android.os.Bundle;
+import android.os.Looper;
 import android.preference.PreferenceManager;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -25,14 +29,13 @@ public class MainActivity extends Activity {
     NsdManager wfNsdManager;
     NsdServiceInfo wfService;
     NsdHelper wfHelper;
-
     //difference is wf is for transmitting service
     //m is for server
     int mPort, wfPort;
     Server wfServer, nsServer;
     Thread newThread, nsThread;
     static Notification mNotify;
-    ArrayList availableServices;
+    ArrayList pictures;
     private String wfIP;
     Context inContext;
     String TAG = "main";
@@ -47,6 +50,8 @@ public class MainActivity extends Activity {
         System.out.println("I should be doing something");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        TextView tv = (TextView) findViewById(R.id.myService);
+        tv.setText("Not initialized yet");
         mNotify = new Notification(this);
         mNotify.notify(2, "test");
         //startActivity(NotificationActivity, )
@@ -79,10 +84,20 @@ public class MainActivity extends Activity {
 
     //filechooser activity/intent
     public void getFile(View view){
+        /*
         //open the file manager "explorer"
         Intent openManager = new Intent(this, FileManagerActivity.class);
         //wait for the selected folders
         startActivityForResult(openManager,requestFileMan);
+        */
+        Intent intent = new Intent();
+        intent.setType("image/*");
+
+        //intent.setAction(Intent.ACTION_PICK_MULTIPLE)
+        intent.setAction(Intent.ACTION_GET_CONTENT);//
+        //intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, pictures);
+        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"),10);
     }
 
 
@@ -99,8 +114,9 @@ public class MainActivity extends Activity {
 
     //method to send port number
     public void nsMethod(Socket s) {
+        securityCheck(s.getInetAddress().getCanonicalHostName(), s);
+        System.out.println("I have alerted");
         Log.i(TAG, "ns method called, sending port");
-        nsServer.sendPort(mPort, s);
     }
 
     public void nsdService() {
@@ -110,24 +126,12 @@ public class MainActivity extends Activity {
         serviceName = mPref
                 .getString("service_prefix", getResources()
                         .getString(R.string.pref_default_display_name)) + "WiFile";
-        /*
-        SharedPreferences.OnSharedPreferenceChangeListener listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
-
-            public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
-                //testing to see if the preference for broadcast name was changed
-                if(key.equals("service_prefix")) {
-                    wfHelper.setWfServiceName(prefs
-                            .getString(key, getResources()
-                                    .getString(R.string.pref_default_display_name)) + "WiFile");
-                }
-            }
-        };
-        mPref.registerOnSharedPreferenceChangeListener(listener);*/
         System.out.println(serviceName);
 
         //initializing variables for nsd
         ListView listView = (ListView) findViewById(R.id.deviceList);
-        wfHelper = new NsdHelper(inContext, listView);
+        TextView textView = (TextView) findViewById(R.id.myService);
+        wfHelper = new NsdHelper(inContext, listView, textView);
         Log.i(TAG, "helper created");
 
         wfServer = new Server(inContext);
@@ -163,7 +167,6 @@ public class MainActivity extends Activity {
             try {
                 while (true) {
                     final Socket s = wfServer.getServsock().accept();
-                    //dialogCreator("this one");
                     Thread t = new Thread(new Runnable() {
                         public void run() {
                             serverMethod(s);
@@ -252,40 +255,92 @@ public class MainActivity extends Activity {
             Writer fileWriter = new Writer(this, str);
             fileWriter.writeFile();
         }
+        if(requestCode == 10) {
+            //System.out.println(data.getDataString());
+            ArrayList<Uri> aui = new ArrayList<Uri>();//data.getClipData());
+            ArrayList<String> str = new ArrayList<String>();
+            //if (data.has != null) {
+                ClipData cd = data.getClipData();
+                if (cd != null) {
+                    for (int i = 0; i < cd.getItemCount(); i++) {
+                        aui.add(cd.getItemAt(i).getUri());
+
+                        str.add(getImagePath(cd.getItemAt(i).getUri()));
+
+                        System.out.println("file writer one " + str.get(i));
+                        System.out.println(cd.getItemAt(i).getUri());
+                        //str.add(cd.getItemAt(i).);
+                    }
+                }
+                Writer fileWriter = new Writer(this, str);
+                fileWriter.writeFile();
+            /*
+            Uri da = data.getData();
+            while(! da.equals(null)) {
+                aui.add(da);//data.getData());
+                da = data.getData();
+            }*/
+            }
+        //}
     }
-/*
-    //creates an okay/cancel dialog
-    public void dialogCreator(String s) {
+
+    public void securityCheck(String str, final Socket s) {
+        final String string = str;
+
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
                 this);
 
         // set title
-        alertDialogBuilder.setTitle("Would you like to connect to: ");
-
+        alertDialogBuilder.setTitle("Security");
         // set dialog message
         alertDialogBuilder
-                .setMessage(s)
+                .setMessage("Would you like to connect to: " + string)
                 .setCancelable(false)
-                .setPositiveButton("Yes",new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog,int id) {
-                        // if this button is clicked, close
-                        // current activity
-                        //finish();
-                        dialog.dismiss();
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        System.out.println("returned");
+                        nsServer.sendPort(mPort, s);
+                        return;
                     }
                 })
-                .setNegativeButton("No",new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog,int id) {
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
                         // if this button is clicked, just close
                         // the dialog box and do nothing
                         dialog.cancel();
+                        try {
+                            s.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        Thread.currentThread().interrupt();
+                        System.out.println("thread interrupted");
                     }
                 });
 
         // create alert dialog
+        Looper.prepare();
         AlertDialog alertDialog = alertDialogBuilder.create();
+
 
         // show it
         alertDialog.show();
-    }*/
+        Looper.loop();
+    }
+    public String getImagePath(Uri uri){
+        Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+        cursor.moveToFirst();
+        String document_id = cursor.getString(0);
+        document_id = document_id.substring(document_id.lastIndexOf(":")+1);
+        cursor.close();
+
+        cursor = getContentResolver().query(
+                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                null, MediaStore.Images.Media._ID + " = ? ", new String[]{document_id}, null);
+        cursor.moveToFirst();
+        String path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
+        cursor.close();
+
+        return path;
+    }
 }

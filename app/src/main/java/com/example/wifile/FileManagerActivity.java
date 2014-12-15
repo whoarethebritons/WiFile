@@ -233,19 +233,16 @@ public class FileManagerActivity extends ListActivity {
     protected void onActivityResult (int requestCode, int resultCode, Intent data) {
         //this gets the ArrayList from the child
         ArrayList<String> strings = data.getStringArrayListExtra("mFileNames");
-        //if there was anything in there
-        //if(strings != null) {
-            //add all the child activity's selections to the current directory's
-            mFileNames.addAll(strings);
-            //and returns result
-            setResult(RESULT_OK, getIntent());
+        
+        //add all the child activity's selections to the current directory's
+        mFileNames.addAll(strings);
+        //and returns result
+        setResult(RESULT_OK, getIntent());
 
-            // testing purposes
-            for (String s : mFileNames) {
-                Log.v(TAG, data + "here:" + s);
-            }
-            //*/
-        //}
+        // testing purposes
+        for (String s : mFileNames) {
+            Log.v(TAG, data + "here:" + s);
+        }
 
         //puts the extra ArrayList
         getIntent().putStringArrayListExtra("mFileNames", mFileNames);

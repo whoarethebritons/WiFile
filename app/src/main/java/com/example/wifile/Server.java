@@ -1,11 +1,6 @@
 package com.example.wifile;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
 import android.util.Log;
 
 import java.io.*;
@@ -47,7 +42,7 @@ public class Server {
 
     //needs to pass in socket as parameter so that server can accept multiple connections
     public void sendPort(int mPort, Socket inSock) {
-        securityCheck(inSock.toString());
+        //securityCheck(inSock.toString());
         MainActivity.mNotify.notify(1, "Connecting");
         Socket sock = inSock;
         String s = sock.toString();
@@ -127,8 +122,10 @@ public class Server {
                 filesToSend.add(readString);
                 //number of files to send increases
                 numOfFiles++;
+                System.out.println(readString);
                 //read next line for loop
                 readString = filebuff.readLine();
+
             }
             //closes the Readers for file
             isr.close ( ) ;
@@ -248,57 +245,7 @@ public class Server {
             e.printStackTrace();
         }
     }
-    public void securityCheck(String s) {
-        final String string = s;
-        Looper.prepare();
-        Handler mHandler = new Handler(new Handler.Callback() {
 
-            @Override
-            public boolean handleMessage(Message msg) {
-                if (msg.arg1 == 1) {
-                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-                            mContext);
-
-                    // set title
-                    alertDialogBuilder.setTitle("Security");
-                    // set dialog message
-                    alertDialogBuilder
-                            .setMessage("Would you like to connect to: " + string)
-                            .setCancelable(false)
-                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    // if this button is clicked, close
-                                    // current activity
-                                    //MainActivity.this.finish();
-                                    //returnVal = true;
-                                    //dialog.
-                                    dialog.dismiss();
-                                    return;
-                                }
-                            })
-                            .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    // if this button is clicked, just close
-                                    // the dialog box and do nothing
-                                    dialog.cancel();
-                                    Thread.currentThread().interrupt();
-                                    System.out.println("thread interrupted");
-                                }
-                            });
-
-                    // create alert dialog
-
-                    AlertDialog alertDialog = alertDialogBuilder.create();
-
-                    // show it
-                    alertDialog.show();
-
-                }
-                return false;
-            }
-        });
-        Looper.loop();
-    }
 
 
 

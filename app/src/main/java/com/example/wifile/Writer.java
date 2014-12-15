@@ -35,6 +35,7 @@ public class Writer {
 
         //checks size of array
             for(String string: mArrayList) {
+                string += "\n";
                 Log.v(TAG, "file to write: " + string) ;
                 fileOutput.write(string.getBytes(),0,string.getBytes().length);
             }

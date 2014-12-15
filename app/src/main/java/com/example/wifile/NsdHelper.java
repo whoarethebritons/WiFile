@@ -7,6 +7,7 @@ import android.net.nsd.NsdServiceInfo;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -24,6 +25,7 @@ public class NsdHelper extends Activity {
     Context wfContext;
     int wfPort, nsPort;
     ArrayList availableServices;
+    TextView wfTextView;
 
     public static final String SERVICE_TYPE = "_ftp._tcp.";
     public static final String TAG = "NsdHelper";
@@ -31,12 +33,13 @@ public class NsdHelper extends Activity {
     public String wfServiceName;// = "EdenNsdWiFile";
     ListView mListView;
     public NsdHelper() {}
-    public NsdHelper(Context context, ListView lv) {
+    public NsdHelper(Context context, ListView lv, TextView tv) {
         nullService = new NsdServiceInfo();
         mListView = lv;
+        wfTextView = tv;
         wfContext = context;
         //wfServiceName = broadcastName;
-
+        nullService.setServiceName("None Found");
         //bindPreferenceSummaryToValue(findPreference("service_prefix"));
         //added to get nsdmanager so that service can be registered
         wfNsdManager = (NsdManager) context.getSystemService(Context.NSD_SERVICE);
@@ -298,6 +301,8 @@ public class NsdHelper extends Activity {
         runOnUiThread(new Runnable () {
                           @Override
                           public void run() {
+              //TextView tv = (TextView) findViewById(R.id.myService);
+              wfTextView.setText(wfServiceName);
               //if this is not added when nothing in list,
               //the service removed method throws index out of bounds
               if(availableServices.size() == 0) {
@@ -305,7 +310,7 @@ public class NsdHelper extends Activity {
               }
               ArrayAdapter adapt = new ArrayAdapter(wfContext,
                       android.R.layout.simple_list_item_1, availableServices);
-
+              adapt.notifyDataSetChanged();
               mListView.setAdapter(adapt);
               }
           }

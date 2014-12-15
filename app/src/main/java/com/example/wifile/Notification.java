@@ -36,26 +36,28 @@ public class Notification {
         // mId allows you to update the notification later on.
     }
     public void notify(int id, String string) {
-        mBuilder.setContentText(string);
-        String ringtone = mPref.getString("notifications_new_message_ringtone","content://settings/system/notification_sound");
-        //if(ringtone.equals("content://settings/system/notification_sound")) {
-        System.out.println(ringtone);
-        Uri ring = Uri.fromFile(new File(ringtone));
-        mBuilder.setSound(ring);
-        //}
-        android.app.Notification note = mBuilder.build();
-        int vibrate = 0;
+        if(mPref.getBoolean("notifications_wifile", true)) {
+            mBuilder.setContentText(string);
+            String ringtone = mPref.getString("notifications_new_message_ringtone", "content://settings/system/notification_sound");
+            //if(ringtone.equals("content://settings/system/notification_sound")) {
+            System.out.println(ringtone);
+            Uri ring = Uri.fromFile(new File(ringtone));
+            mBuilder.setSound(ring);
+            //}
+            android.app.Notification note = mBuilder.build();
+            int vibrate = 0;
 
-        if(mPref.getBoolean("notifications_new_message_vibrate", true)) {
-            vibrate = android.app.Notification.DEFAULT_VIBRATE;
+            if (mPref.getBoolean("notifications_new_message_vibrate", true)) {
+                vibrate = android.app.Notification.DEFAULT_VIBRATE;
+            }
+
+            //+ "WiFile";);//android.app.Notification.DEFAULT_SOUND);
+
+            note.defaults |= vibrate;
+            //note.defaults |= ringtone;
+
+
+            mNotificationManager.notify(id, note);
         }
-
-        //+ "WiFile";);//android.app.Notification.DEFAULT_SOUND);
-
-        note.defaults |= vibrate;
-        //note.defaults |= ringtone;
-
-
-        mNotificationManager.notify(id, note);
     }
 }
