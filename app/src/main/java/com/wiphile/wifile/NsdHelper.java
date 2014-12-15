@@ -1,4 +1,4 @@
-package com.example.wifile;
+package com.wiphile.wifile;
 
 import android.app.Activity;
 import android.content.Context;
@@ -8,7 +8,6 @@ import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -30,7 +29,7 @@ public class NsdHelper extends Activity {
     public static final String SERVICE_TYPE = "_ftp._tcp.";
     public static final String TAG = "NsdHelper";
 
-    public String wfServiceName;// = "EdenNsdWiFile";
+    public String wfServiceName;
     ListView mListView;
     public NsdHelper() {}
     public NsdHelper(Context context, ListView lv, TextView tv) {
@@ -38,13 +37,11 @@ public class NsdHelper extends Activity {
         mListView = lv;
         wfTextView = tv;
         wfContext = context;
-        //wfServiceName = broadcastName;
+        //holder for array adapter
         nullService.setServiceName("None Found");
-        //bindPreferenceSummaryToValue(findPreference("service_prefix"));
         //added to get nsdmanager so that service can be registered
         wfNsdManager = (NsdManager) context.getSystemService(Context.NSD_SERVICE);
-        availableServices = new ArrayList();//Adapter(wfContext, R.layout.activity_filelist);
-        System.out.println("helper created");
+        availableServices = new ArrayList();
         initializeNsd();
     }
 
@@ -62,13 +59,9 @@ public class NsdHelper extends Activity {
         wfServiceName = serviceName;
         nsPort = port;
         NsdServiceInfo serviceInfo = new NsdServiceInfo();
-//System.out.println(serviceInfo.getHost().getHostName() );
         serviceInfo.setServiceName(serviceName);
         serviceInfo.setServiceType(SERVICE_TYPE);
         serviceInfo.setPort(nsPort);
-        System.out.println(nsPort);
-
-        //wfNsdManager = Context.getSystemService(Context.NSD_SERVICE);
 
         wfNsdManager.registerService(
                 serviceInfo, NsdManager.PROTOCOL_DNS_SD, wfRegistrationListener);
@@ -133,9 +126,6 @@ public class NsdHelper extends Activity {
             @Override
             public void onServiceFound(NsdServiceInfo service) {
                 // A service was found!
-
-
-
                 Log.d(TAG, "Service discovery success" + service);
                 //added to see which port the server was on
                 Log.d(TAG, "my server on port: " + wfPort);
@@ -167,24 +157,12 @@ public class NsdHelper extends Activity {
                 if(availableServices.size() > 0) {
                     Iterator it = availableServices.iterator();
                     while (it.hasNext()) {
-                        //Object o=it.next()
-                        //if(o.equals(what i'm looking for)){
-                        //iter.remove();
-
                         NsdServiceInfo ns = (NsdServiceInfo) it.next();
-                        System.out.println(ns);
                         if (service.getServiceName().equals(ns.getServiceName())) {
                             it.remove();
-                            //availableServices.remove(ns);
-                            //i--;
                             Log.e(TAG, "removed " + service + " from list");
                         }
                     }
-                    //availableServices.remove(service);
-                /*
-                for(int i = 0; i<= availableServices.size(); i++) {
-                    System.out.println(((NsdServiceInfo)availableServices.get(i)));
-                }*/
                     makeList();
                 }
                 if (wfService == service) { wfService = null; }
@@ -237,7 +215,6 @@ public class NsdHelper extends Activity {
                  */
 
                 if(!availableServices.contains(serviceInfo)) {
-                    System.out.println("doesn't contain it");
                     availableServices.add(serviceInfo);
                     int n;
                     if(availableServices.size() >0) {
@@ -247,9 +224,7 @@ public class NsdHelper extends Activity {
                     }
                 }
                 else {
-                    System.out.println("contains it");
                     availableServices.remove(serviceInfo);
-                    System.out.println("removed it");
                 }
                 makeList();
                 Log.e(TAG, "Resolve Succeeded." + serviceInfo);
@@ -259,10 +234,7 @@ public class NsdHelper extends Activity {
                     return;
                 }
                 wfService = serviceInfo;
-                //int port = wfService.getPort();
-                //InetAddress host = wfService.getHost();
             }
-
         };
     }// end initializeResolveListener
 
@@ -286,14 +258,6 @@ public class NsdHelper extends Activity {
     }
     public ArrayList getAvailableServices() { return availableServices; }
 
-    public void setWfServiceName(String s) {
-        /*
-        wfNsdManager.unregisterService(wfRegistrationListener);
-        wfNsdManager.stopServiceDiscovery(wfDiscoveryListener);
-        registerService(nsPort, s);*/
-        //
-    }
-
     //makes list for the ui to display the available services
     public void makeList() {
         //forces the arrayadapter to be created on the ui thread
@@ -301,7 +265,6 @@ public class NsdHelper extends Activity {
         runOnUiThread(new Runnable () {
                           @Override
                           public void run() {
-              //TextView tv = (TextView) findViewById(R.id.myService);
               wfTextView.setText(wfServiceName);
               //if this is not added when nothing in list,
               //the service removed method throws index out of bounds

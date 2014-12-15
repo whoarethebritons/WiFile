@@ -1,4 +1,4 @@
-package com.example.wifile;
+package com.wiphile.wifile;
 
 import android.app.NotificationManager;
 import android.content.Context;

@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.wifile" >
+    package="com.wiphile.wifile" >
 
     <uses-sdk
-        android:maxSdkVersion="19"
         android:minSdkVersion="16"
         android:targetSdkVersion="19" />
 
@@ -28,14 +27,6 @@
             <action android:name="android.intent.action.SEND_MULTIPLE" />
         </intent-filter>
 
-        </activity>
-        <activity
-            android:name=".FileManagerActivity"
-            android:label="@string/title_activity_file_manager"
-            android:parentActivityName=".MainActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="MainActivity" />
         </activity>
         <activity
             android:name=".SettingsActivity"

@@ -1,4 +1,4 @@
-package com.example.wifile;
+package com.wiphile.wifile;
 
 import android.content.Context;
 import android.util.Log;

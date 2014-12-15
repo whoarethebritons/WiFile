@@ -3,15 +3,15 @@
     <!-- These settings headers are only used on tablets. -->
 
     <header
-        android:fragment="com.example.wifile.SettingsActivity$GeneralPreferenceFragment"
+        android:fragment="com.wiphile.wifile.SettingsActivity$GeneralPreferenceFragment"
         android:title="@string/pref_header_general" />
 
     <header
-        android:fragment="com.example.wifile.SettingsActivity$NotificationPreferenceFragment"
+        android:fragment="com.wiphile.wifile.SettingsActivity$NotificationPreferenceFragment"
         android:title="@string/pref_header_notifications" />
 
     <header
-        android:fragment="com.example.wifile.SettingsActivity$DataSyncPreferenceFragment"
+        android:fragment="com.wiphile.wifile.SettingsActivity$DataSyncPreferenceFragment"
         android:title="@string/pref_header_data_sync" />
 
 </preference-headers>

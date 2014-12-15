@@ -1,4 +1,4 @@
-package com.example.wifile;
+package com.wiphile.wifile;
 
 import android.content.Context;
 import android.util.Log;
@@ -88,6 +88,7 @@ public class Server {
 
     //needs socket as parameter so that it can have multiple connections
     public void sendFiles(Socket inSock) {
+        //notifications
         MainActivity.mNotify.notify(1, "Transferring Files");
 
         //socket of client connecting
@@ -122,7 +123,6 @@ public class Server {
                 filesToSend.add(readString);
                 //number of files to send increases
                 numOfFiles++;
-                System.out.println(readString);
                 //read next line for loop
                 readString = filebuff.readLine();
 
@@ -144,9 +144,6 @@ public class Server {
             boolean same = false;
 
             while(filesReceived < numOfFiles) {
-                //testing:
-                System.out.println(filesReceived + filesToSend.get(filesReceived));
-
                 //if the number read from the client is not the same number it just was
                 if(!same) {
                     try {
@@ -158,46 +155,39 @@ public class Server {
                         int temp = filesReceived;
                         //gets new value
                         filesReceived = sockInput.readInt();
-                        //testing:
-                        System.out.println(filesReceived);
                         //this is basically to make sure it doesn't keep
                         //sending the same file
                         if (temp == filesReceived) {
                             same = true;
                         }
                         //testing:
-                        Log.i(TAG, "something is connecting");
+                        Log.i(TAG, "client is connecting");
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
                 else {
                     //testing:
-                    System.out.println("file already sent");
+                    Log.v(TAG, "file already sent");
                     filesReceived = sockInput.readInt();
                 }
             }
             sockOutput.close();
-            System.out.println("readString was null");
+            Log.v(TAG, "server is done");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }finally {
             try {
-                System.out.println("socket close");
+                Log.v(TAG, "socket close");
                 sock.close();
+                //notification
                 MainActivity.mNotify.notify(1, "Transfer Complete");
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-        /* to see if thread is interrupted
-        if (Thread.currentThread().isInterrupted()) {
-            return;
-        }*/
-
-
     }
 
     public void sendSingleFile(File file, DataOutputStream dos) throws IOException {
@@ -211,9 +201,6 @@ public class Server {
             dos.writeLong(file.length());
             //writes file name to socket
             dos.writeUTF(file.getName());
-
-            //testing:
-            System.out.println(file.getAbsolutePath());
 
             //initialize streams for file reader
             BufferedInputStream buffStream = new BufferedInputStream(input);
@@ -229,8 +216,6 @@ public class Server {
             dos.flush();
             //closes file stream
             input.close();
-            //testing:
-            System.out.println("File successfully sent!");
         }
     }
 
@@ -245,8 +230,4 @@ public class Server {
             e.printStackTrace();
         }
     }
-
-
-
-
 }

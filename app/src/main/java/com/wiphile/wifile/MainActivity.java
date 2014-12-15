@@ -1,4 +1,4 @@
-package com.example.wifile;
+package com.wiphile.wifile;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -47,15 +47,10 @@ public class MainActivity extends Activity {
     NotificationManager mNotificationManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        System.out.println("I should be doing something");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         TextView tv = (TextView) findViewById(R.id.myService);
-        tv.setText("Not initialized yet");
         mNotify = new Notification(this);
-        mNotify.notify(2, "test");
-        //startActivity(NotificationActivity, )
-
         nsdService();
     }
 
@@ -84,20 +79,12 @@ public class MainActivity extends Activity {
 
     //filechooser activity/intent
     public void getFile(View view){
-        /*
-        //open the file manager "explorer"
-        Intent openManager = new Intent(this, FileManagerActivity.class);
-        //wait for the selected folders
-        startActivityForResult(openManager,requestFileMan);
-        */
+        //creates chooser that allows user to select images
         Intent intent = new Intent();
         intent.setType("image/*");
-
-        //intent.setAction(Intent.ACTION_PICK_MULTIPLE)
-        intent.setAction(Intent.ACTION_GET_CONTENT);//
-        //intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, pictures);
+        intent.setAction(Intent.ACTION_GET_CONTENT);
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"),10);
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"),requestFileMan);
     }
 
 
@@ -115,7 +102,6 @@ public class MainActivity extends Activity {
     //method to send port number
     public void nsMethod(Socket s) {
         securityCheck(s.getInetAddress().getCanonicalHostName(), s);
-        System.out.println("I have alerted");
         Log.i(TAG, "ns method called, sending port");
     }
 
@@ -126,7 +112,6 @@ public class MainActivity extends Activity {
         serviceName = mPref
                 .getString("service_prefix", getResources()
                         .getString(R.string.pref_default_display_name)) + "WiFile";
-        System.out.println(serviceName);
 
         //initializing variables for nsd
         ListView listView = (ListView) findViewById(R.id.deviceList);
@@ -155,7 +140,6 @@ public class MainActivity extends Activity {
         //start discovery
         wfHelper.registerService(wfPort, serviceName);
         wfHelper.discoverServices();
-        System.out.println("wfPort: " + wfPort);
 
         //without a new thread for the server transfers
         //there will be a NetworkOnMainThreadException
@@ -214,9 +198,7 @@ public class MainActivity extends Activity {
 
     @Override
     protected void onPause() {
-        if (wfHelper != null) {
-            //wfHelper.tearDown();
-        }
+        //don't tear down
         super.onPause();
     }
 
@@ -225,7 +207,6 @@ public class MainActivity extends Activity {
         if (wfHelper == null) {
             wfHelper.registerService(wfPort, serviceName);
             wfHelper.discoverServices();
-            System.out.println("wfPort: " + wfPort);
         }
         super.onResume();
     }
@@ -247,41 +228,28 @@ public class MainActivity extends Activity {
     protected void onActivityResult (int requestCode, int resultCode, Intent data) {
         if(requestCode == requestFileMan) {
             ArrayList<String> str = new ArrayList<String>();
-            ArrayList<String> strings = data.getStringArrayListExtra("mFileNames");
-            str.addAll(strings);
-            for (String s : str) {
-                System.out.println(s);
+            if(resultCode == 0) {
+                //none selected
+                return;
             }
-            Writer fileWriter = new Writer(this, str);
-            fileWriter.writeFile();
-        }
-        if(requestCode == 10) {
-            //System.out.println(data.getDataString());
-            ArrayList<Uri> aui = new ArrayList<Uri>();//data.getClipData());
-            ArrayList<String> str = new ArrayList<String>();
-            //if (data.has != null) {
+            if(data.getData() == null) {
                 ClipData cd = data.getClipData();
+                //two or more selected
                 if (cd != null) {
                     for (int i = 0; i < cd.getItemCount(); i++) {
-                        aui.add(cd.getItemAt(i).getUri());
-
                         str.add(getImagePath(cd.getItemAt(i).getUri()));
-
-                        System.out.println("file writer one " + str.get(i));
-                        System.out.println(cd.getItemAt(i).getUri());
-                        //str.add(cd.getItemAt(i).);
                     }
                 }
+            }else {
+                //one selected
+                Uri cd = data.getData();
+                str.add(getImagePath(cd));
+            }
+            if(str != null) {
                 Writer fileWriter = new Writer(this, str);
                 fileWriter.writeFile();
-            /*
-            Uri da = data.getData();
-            while(! da.equals(null)) {
-                aui.add(da);//data.getData());
-                da = data.getData();
-            }*/
             }
-        //}
+        }
     }
 
     public void securityCheck(String str, final Socket s) {
@@ -298,7 +266,7 @@ public class MainActivity extends Activity {
                 .setCancelable(false)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        System.out.println("returned");
+                        //if they want to connect, they press yes and it sends port
                         nsServer.sendPort(mPort, s);
                         return;
                     }
@@ -314,7 +282,6 @@ public class MainActivity extends Activity {
                             e.printStackTrace();
                         }
                         Thread.currentThread().interrupt();
-                        System.out.println("thread interrupted");
                     }
                 });
 
@@ -333,14 +300,12 @@ public class MainActivity extends Activity {
         String document_id = cursor.getString(0);
         document_id = document_id.substring(document_id.lastIndexOf(":")+1);
         cursor.close();
-
         cursor = getContentResolver().query(
                 android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                 null, MediaStore.Images.Media._ID + " = ? ", new String[]{document_id}, null);
         cursor.moveToFirst();
         String path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
         cursor.close();
-
         return path;
     }
 }
